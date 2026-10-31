@@ -1,0 +1,182 @@
+<div class="idoc-shell idoc-document-management">
+  <header class="idoc-management-header">
+    <div class="idoc-management-icon"><i class="fa-solid fa-folder-gear"></i></div>
+    <div>
+      <h2>Document storage and naming</h2>
+      <p>Configure where new illuminated books appear in the Journal tab and how their Journal names are generated.</p>
+    </div>
+  </header>
+
+  <div class="idoc-management-body">
+    <section class="idoc-management-section">
+      <header>
+        <i class="fa-solid fa-folder-tree"></i>
+        <div>
+          <h3>Journal-tab destination</h3>
+          <p>This controls only newly created Illuminated Documents. Existing books remain in their current folders.</p>
+        </div>
+      </header>
+
+      <div class="idoc-folder-mode-list">
+        {{#each folderModes}}
+          <label class="idoc-folder-mode-card {{#if selected}}is-selected{{/if}}">
+            <input type="radio" name="folderMode" value="{{id}}" {{#if selected}}checked{{/if}}>
+            <span class="idoc-folder-mode-copy">
+              <strong>{{name}}</strong>
+              <small>{{description}}</small>
+            </span>
+          </label>
+        {{/each}}
+      </div>
+
+      <div class="idoc-custom-folder-fields" data-custom-folder-fields>
+        <div class="form-group">
+          <label>Custom Journal folder</label>
+          <div class="form-fields">
+            <select name="folderId">
+              <option value="">Choose a Journal folder…</option>
+              {{#each folders}}
+                <option value="{{id}}" {{#if selected}}selected{{/if}}>{{path}}</option>
+              {{/each}}
+            </select>
+            <button type="button" data-action="create-folder" title="Create and select a new root-level Journal folder" aria-label="Create Journal folder">
+              <i class="fa-solid fa-folder-plus"></i>
+            </button>
+          </div>
+          <p class="notes">If no custom folder is selected, or if it is later deleted, new books fall back to <strong>{{defaultFolderName}}</strong>.</p>
+        </div>
+      </div>
+
+      <div class="idoc-destination-preview">
+        <div>
+          <span>Resolved destination</span>
+          <strong data-destination-preview>{{destination}}</strong>
+        </div>
+        <button type="button" data-action="create-default-folder" title="Create the module default Journal folder now">
+          <i class="fa-solid fa-folder-check"></i> Prepare default folder
+        </button>
+      </div>
+    </section>
+
+    <section class="idoc-management-section">
+      <header>
+        <i class="fa-solid fa-signature"></i>
+        <div>
+          <h3>Global document naming</h3>
+          <p>Prefix and suffix are optional. The format string decides how the title, preset, date, user, and optional affixes are combined.</p>
+        </div>
+      </header>
+
+      <div class="idoc-grid-2">
+        <label>
+          Optional prefix
+          <input name="globalPrefix" value="{{settings.globalPrefix}}" placeholder="Example: Chronicle — ">
+        </label>
+        <label>
+          Optional suffix
+          <input name="globalSuffix" value="{{settings.globalSuffix}}" placeholder="Example:  — Archive">
+        </label>
+      </div>
+
+      <div class="form-group stacked">
+        <label>Document-name format string</label>
+        <div class="form-fields">
+          <input name="globalFormat" value="{{settings.globalFormat}}">
+          <button type="button" data-action="reset-format" title="Restore the default format" aria-label="Restore default naming format">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+        </div>
+        <p class="notes">Tokens: <code>{title}</code>, <code>{globalPrefix}</code>, <code>{globalSuffix}</code>, <code>{presetPrefix}</code>, <code>{presetSuffix}</code>, <code>{preset}</code>, <code>{date}</code>, <code>{time}</code>, <code>{user}</code>.</p>
+      </div>
+
+      <div class="idoc-name-preview">
+        <span>Example resulting Journal name</span>
+        <strong data-name-preview class="{{#if previewError}}is-error{{/if}}">{{#if previewError}}{{previewError}}{{else}}{{preview}}{{/if}}</strong>
+      </div>
+    </section>
+
+    <section class="idoc-management-section">
+      <header>
+        <i class="fa-solid fa-book-open-reader"></i>
+        <div><h3>Default Journal view</h3><p>Choose how Illuminated Documents open when the module controls the action.</p></div>
+      </header>
+      <div class="form-group">
+        <label>Preferred view</label>
+        <select name="journalViewMode">
+          {{#each viewModes}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}
+        </select>
+      </div>
+      <ul class="idoc-view-mode-help">
+        <li><strong>Foundry Journal Entry:</strong> the standard multipage Journal window.</li>
+        <li><strong>Foundry single-page view:</strong> the live text page without the Journal sidebar.</li>
+        <li><strong>Illuminated book viewer:</strong> a clean module-owned reader with the rendered book and its actions.</li>
+      </ul>
+    </section>
+
+    <section class="idoc-management-section idoc-extension-diagnostics">
+      <header>
+        <i class="fa-solid fa-puzzle-piece"></i>
+        <div>
+          <h3>{{localize "ILLUMINATED.Extensions.DiagnosticsTitle"}}</h3>
+          <p>{{localize "ILLUMINATED.Extensions.DiagnosticsHint"}}</p>
+        </div>
+      </header>
+
+      <div class="idoc-extension-api-summary">
+        <span>{{localize "ILLUMINATED.Extensions.ApiVersion"}}</span>
+        <strong>{{extensionDiagnostics.apiVersion}}</strong>
+        <span>{{localize "ILLUMINATED.Extensions.Lifecycle"}}</span>
+        <strong>{{extensionDiagnostics.phase}}</strong>
+      </div>
+
+      {{#if hasRegisteredExtensions}}
+        <div class="idoc-extension-diagnostic-list">
+          {{#each extensionDiagnostics.extensions}}
+            <article class="idoc-extension-diagnostic-card {{#if lastError}}has-error{{/if}}">
+              <header>
+                <div>
+                  <strong>{{title}}</strong>
+                  <code>{{id}}</code>
+                </div>
+                <span>{{version}}</span>
+              </header>
+              <dl>
+                <div><dt>{{localize "ILLUMINATED.Extensions.Status"}}</dt><dd>{{status}}</dd></div>
+                <div><dt>{{localize "ILLUMINATED.Extensions.Fields"}}</dt><dd>{{fieldCount}}</dd></div>
+                <div><dt>{{localize "ILLUMINATED.Extensions.Callbacks"}}</dt><dd>{{callbackCount}}</dd></div>
+                <div><dt>{{localize "ILLUMINATED.Extensions.LateRegistration"}}</dt><dd>{{#if lateRegistration}}{{localize "ILLUMINATED.Extensions.Yes"}}{{else}}{{localize "ILLUMINATED.Extensions.No"}}{{/if}}</dd></div>
+              </dl>
+              {{#if capabilities.length}}
+                <p class="idoc-extension-capabilities"><strong>{{localize "ILLUMINATED.Extensions.Capabilities"}}</strong> {{#each capabilities}}<code>{{this}}</code>{{/each}}</p>
+              {{/if}}
+              {{#if compatibilityWarning}}
+                <p class="idoc-extension-error"><strong>{{localize "ILLUMINATED.Extensions.CompatibilityWarning"}}</strong> {{compatibilityWarning}}</p>
+              {{/if}}
+              {{#if lastError}}
+                <p class="idoc-extension-error"><strong>{{localize "ILLUMINATED.Extensions.LastError"}}</strong> {{lastError.callback}}: {{lastError.message}}</p>
+              {{/if}}
+            </article>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="idoc-extension-empty">
+          <i class="fa-solid fa-circle-check"></i>
+          <p>{{localize "ILLUMINATED.Extensions.NoneRegistered"}}</p>
+        </div>
+      {{/if}}
+
+      <div class="idoc-extension-diagnostic-actions">
+        <button type="button" data-action="copy-extension-diagnostics"><i class="fa-solid fa-copy"></i> {{localize "ILLUMINATED.Extensions.CopyDiagnostics"}}</button>
+        <button type="button" data-action="validate-extensions"><i class="fa-solid fa-list-check"></i> {{localize "ILLUMINATED.Extensions.Validate"}}</button>
+        <button type="button" data-action="rerender-extensions"><i class="fa-solid fa-arrows-rotate"></i> {{localize "ILLUMINATED.Extensions.Rerender"}}</button>
+        <button type="button" data-action="clear-extension-caches"><i class="fa-solid fa-broom"></i> {{localize "ILLUMINATED.Extensions.ClearCaches"}}</button>
+      </div>
+    </section>
+  </div>
+
+  <footer class="idoc-management-footer">
+    <button type="button" data-action="save" class="idoc-primary-action">
+      <i class="fa-solid fa-floppy-disk"></i> Save storage and naming
+    </button>
+  </footer>
+</div>

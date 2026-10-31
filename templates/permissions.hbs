@@ -1,0 +1,65 @@
+<div class="idoc-shell idoc-permissions idoc-permissions-granular">
+  <header class="idoc-permissions-header">
+    <div class="idoc-permissions-icon"><i class="fa-solid fa-user-shield"></i></div>
+    <div>
+      <h2>Granular player permissions</h2>
+      <p>Grant module capabilities independently. Sharing an individual preset or visual template is configured in its manager and remains GM-controlled.</p>
+    </div>
+  </header>
+
+  <section class="idoc-permission-summary idoc-permission-summary-granular" aria-label="Permission summary">
+    <div><strong data-count="createDocuments">{{createCount}}</strong><span>Can create</span></div>
+    <div><strong data-count="managePresets">{{presetCount}}</strong><span>Preset managers</span></div>
+    <div><strong data-count="manageTemplates">{{templateCount}}</strong><span>Template managers</span></div>
+    <div><strong>{{onlineCount}} / {{userCount}}</strong><span>Online players</span></div>
+  </section>
+
+  <section class="idoc-permission-explanation">
+    <div><i class="fa-solid fa-file-circle-plus"></i><strong>Create documents</strong><span>Open ID Studio, preview, create, extend, and edit owned illuminated books using presets shared with the player.</span></div>
+    <div><i class="fa-solid fa-book"></i><strong>Manage presets</strong><span>Create presets and edit only presets explicitly shared with the player. New player-created presets are private to that player until a GM changes sharing.</span></div>
+    <div><i class="fa-solid fa-layer-group"></i><strong>Manage templates</strong><span>Create visual templates and edit only templates explicitly shared with the player. Foundry file-browser permissions still apply.</span></div>
+  </section>
+
+  <div class="idoc-permission-matrix-header" aria-hidden="true">
+    <div>Player</div>
+    <div>
+      <span>Create documents</span>
+      <span class="idoc-column-actions"><button type="button" data-action="set-column" data-permission="createDocuments" data-checked="true" title="Grant to all" aria-label="Grant this permission to all players"><i class="fa-solid fa-check-double"></i></button><button type="button" data-action="set-column" data-permission="createDocuments" data-checked="false" title="Clear column" aria-label="Clear this permission for all players"><i class="fa-solid fa-xmark"></i></button></span>
+    </div>
+    <div>
+      <span>Manage presets</span>
+      <span class="idoc-column-actions"><button type="button" data-action="set-column" data-permission="managePresets" data-checked="true" title="Grant to all" aria-label="Grant this permission to all players"><i class="fa-solid fa-check-double"></i></button><button type="button" data-action="set-column" data-permission="managePresets" data-checked="false" title="Clear column" aria-label="Clear this permission for all players"><i class="fa-solid fa-xmark"></i></button></span>
+    </div>
+    <div>
+      <span>Manage templates</span>
+      <span class="idoc-column-actions"><button type="button" data-action="set-column" data-permission="manageTemplates" data-checked="true" title="Grant to all" aria-label="Grant this permission to all players"><i class="fa-solid fa-check-double"></i></button><button type="button" data-action="set-column" data-permission="manageTemplates" data-checked="false" title="Clear column" aria-label="Clear this permission for all players"><i class="fa-solid fa-xmark"></i></button></span>
+    </div>
+  </div>
+
+  <section class="idoc-user-list idoc-permission-matrix">
+    {{#if users.length}}
+      {{#each users}}
+        <article class="idoc-permission-row" data-user-row data-user-id="{{id}}" data-grant-count="{{permissionCount}}">
+          <div class="idoc-permission-player">
+            <span class="idoc-user-avatar" aria-hidden="true">{{initials}}</span>
+            <span class="idoc-user-details">
+              <strong>{{name}}</strong>
+              <small class="{{#if active}}is-online{{else}}is-offline{{/if}}"><i class="fa-solid fa-circle"></i>{{status}} · <span data-row-grant-count>{{permissionCount}}</span> grants</small>
+              <small class="idoc-resource-share-counts"><i class="fa-solid fa-share-nodes"></i>{{sharedPresetCount}} presets · {{sharedTemplateCount}} templates shared</small>
+            </span>
+          </div>
+          <label class="idoc-permission-toggle"><input type="checkbox" data-permission="createDocuments" {{#if createDocuments}}checked{{/if}}><span><i class="fa-solid fa-file-circle-plus"></i>Create</span></label>
+          <label class="idoc-permission-toggle"><input type="checkbox" data-permission="managePresets" {{#if managePresets}}checked{{/if}}><span><i class="fa-solid fa-book"></i>Presets</span></label>
+          <label class="idoc-permission-toggle"><input type="checkbox" data-permission="manageTemplates" {{#if manageTemplates}}checked{{/if}}><span><i class="fa-solid fa-layer-group"></i>Templates</span></label>
+        </article>
+      {{/each}}
+    {{else}}
+      <div class="idoc-permission-empty"><i class="fa-solid fa-users-slash"></i><strong>No non-GM users found</strong><p>Create or invite player users before assigning module permissions.</p></div>
+    {{/if}}
+  </section>
+
+  <footer class="idoc-permission-footer">
+    <button type="button" data-action="close">Cancel</button>
+    <button type="button" data-action="save" class="idoc-primary-action"><i class="fa-solid fa-floppy-disk"></i>Save permissions</button>
+  </footer>
+</div>

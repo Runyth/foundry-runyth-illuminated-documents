@@ -1,0 +1,243 @@
+<div class="idoc-shell idoc-studio">
+  <section class="idoc-compose">
+    <nav class="idoc-mode-switch" aria-label="Document operation">
+      <button type="button" data-mode="create" class="{{#if isCreateMode}}active{{/if}}">
+        <i class="fa-solid fa-file-circle-plus"></i>
+        New document
+      </button>
+      <button type="button" data-mode="extend" class="{{#if isExtendMode}}active{{/if}}">
+        <i class="fa-solid fa-book-medical"></i>
+        Extend existing
+      </button>
+    </nav>
+
+    {{#if isCreateMode}}
+      <section class="idoc-studio-field idoc-document-title-field" aria-labelledby="idoc-document-title-label">
+        <label id="idoc-document-title-label" for="idoc-document-title">
+          <span class="idoc-field-label">{{localize "ILLUMINATED.Studio.DocumentTitleLabel"}}</span>
+          <small id="idoc-document-title-hint" class="idoc-field-hint">{{localize "ILLUMINATED.Studio.DocumentTitleHint"}}</small>
+        </label>
+        <input
+          id="idoc-document-title"
+          name="title"
+          type="text"
+          value="{{draft.title}}"
+          placeholder="{{localize "ILLUMINATED.Studio.DocumentTitlePlaceholder"}}"
+          aria-describedby="idoc-document-title-hint"
+          autocomplete="off"
+        >
+      </section>
+      <div class="idoc-name-preview idoc-studio-name-preview">
+        <span>Resulting Journal name</span>
+        <strong data-document-name-preview class="{{#if documentNamePreviewError}}is-error{{/if}}">{{#if documentNamePreviewError}}{{documentNamePreviewError}}{{else}}{{documentNamePreview}}{{/if}}</strong>
+      </div>
+
+      <section class="idoc-studio-field idoc-preset-picker">
+        <label id="idoc-book-preset-label" for="idoc-book-preset" class="idoc-field-label">{{localize "ILLUMINATED.Studio.BookPresetLabel"}}</label>
+        <div class="idoc-preset-control-row">
+          <select id="idoc-book-preset" name="presetId" aria-labelledby="idoc-book-preset-label">
+            {{#each presets}}
+              <option value="{{id}}" {{#if (eq id ../presetId)}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </select>
+          <div class="idoc-preset-actions" role="group" aria-label="{{localize "ILLUMINATED.Studio.PresetActionsLabel"}}">
+            {{#if canManageTemplates}}
+              <button type="button" data-action="manage-templates" title="{{localize "ILLUMINATED.Studio.ManageVisualTemplatesHint"}}">
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                <span>{{localize "ILLUMINATED.Studio.VisualTemplatesAction"}}</span>
+              </button>
+            {{/if}}
+            {{#if canManagePresets}}
+              <button type="button" data-action="manage-presets" title="{{localize "ILLUMINATED.Studio.ManagePresetsHint"}}">
+                <i class="fa-solid fa-book" aria-hidden="true"></i>
+                <span>{{localize "ILLUMINATED.Studio.PresetsAction"}}</span>
+              </button>
+            {{/if}}
+          </div>
+        </div>
+      </section>
+
+      {{#if hasPresets}}
+      <div class="idoc-template-summary"><div><strong>{{activePreset.name}}</strong><small>Body pages alternate left and right. Optional covers do not consume text.</small></div></div>
+      {{else}}
+      <div class="idoc-access-warning"><i class="fa-solid fa-lock"></i><div><strong>No book preset is shared with this account.</strong><p>Ask a Game Master to share a preset, or use the preset manager when you have permission to create one.</p></div></div>
+      {{/if}}
+
+      <div class="idoc-cover-options">
+        <label>
+          <input type="checkbox" name="includeFrontCover" {{#if draft.includeFrontCover}}checked{{/if}} {{#unless activePreset.frontCoverTemplateId}}disabled{{/unless}}>
+          Include front cover
+        </label>
+        <label>
+          <input type="checkbox" name="includeBackCover" {{#if draft.includeBackCover}}checked{{/if}} {{#unless activePreset.backCoverTemplateId}}disabled{{/unless}}>
+          Include back cover
+        </label>
+      </div>
+
+      <section class="idoc-journal-structure-option" aria-labelledby="idoc-journal-structure-label">
+        <label id="idoc-journal-structure-label" for="idoc-sections-as-chapters">
+          <input
+            id="idoc-sections-as-chapters"
+            type="checkbox"
+            name="sectionsAsChapters"
+            {{#if draft.sectionsAsChapters}}checked{{/if}}
+          >
+          <span>
+            <strong>{{localize "ILLUMINATED.Studio.SectionsAsChapters"}}</strong>
+            <small>{{localize "ILLUMINATED.Studio.SectionsAsChaptersHint"}}</small>
+          </span>
+        </label>
+      </section>
+
+      <div class="idoc-dimension-notice">
+        <i class="fa-solid fa-hard-drive"></i>
+        <div>
+          <strong>Live-rendered document: no generated page images are saved.</strong><br>
+          <small>The Journal stores source text, preset ID, and cover choices. Background and font assets remain the only persistent files.</small>
+        </div>
+      </div>
+
+      <section class="idoc-studio-field idoc-section-label-field">
+        <label for="idoc-initial-section-label" class="idoc-field-label">{{localize "ILLUMINATED.Studio.InitialSectionLabel"}}</label>
+        <small class="idoc-field-hint">{{localize "ILLUMINATED.Studio.InitialSectionLabelHint"}}</small>
+        <input id="idoc-initial-section-label" name="initialSectionLabel" type="text" value="{{draft.initialSectionLabel}}" autocomplete="off">
+      </section>
+
+      <label class="idoc-text-label">Text or Markdown</label>
+      <textarea name="text" class="idoc-document-text" placeholder="Paste or write the document text here.">{{draft.text}}</textarea>
+
+      {{#if hasCreationExtensions}}
+        <section class="idoc-extension-contributions">
+          <h3><i class="fa-solid fa-puzzle-piece"></i> Extension metadata</h3>
+          {{> "modules/runyth-illuminated-documents/templates/extension-fields.hbs" groups=creationDocumentExtensionGroups}}
+          {{> "modules/runyth-illuminated-documents/templates/extension-fields.hbs" groups=creationBlockExtensionGroups}}
+        </section>
+      {{/if}}
+
+      <footer class="idoc-actions">
+        <button type="button" data-action="preview">
+          <i class="fa-solid fa-eye"></i>
+          Preview
+        </button>
+        <button type="button" data-action="render" {{#unless hasPresets}}disabled{{/unless}}>
+          <i class="fa-solid fa-book-open"></i>
+          Create live document
+        </button>
+      </footer>
+    {{else}}
+      {{#if hasExistingDocuments}}
+        <div class="form-group idoc-existing-document-picker">
+          <label>Illuminated Document to extend</label>
+          <select name="journalId">
+            {{#each existingDocuments}}
+              <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <section class="idoc-extension-summary">
+          <header>
+            <div class="idoc-extension-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+            <div>
+              <strong>{{selectedDocument.name}}</strong>
+              <small>{{selectedDocument.presetName}}</small>
+            </div>
+          </header>
+          <div class="idoc-extension-stats">
+            <div><strong>{{selectedDocument.sourceLength}}</strong><span>Characters</span></div>
+            <div><strong>{{selectedDocument.revision}}</strong><span>Revision</span></div>
+            <div><strong>{{selectedDocument.extensionCount}}</strong><span>Extensions</span></div>
+          </div>
+          <dl>
+            <div><dt>Last updated</dt><dd>{{selectedDocument.updatedAtLabel}}</dd></div>
+            <div><dt>Front cover</dt><dd>{{#if selectedDocument.includesFrontCover}}Included{{else}}Not included{{/if}}</dd></div>
+            <div><dt>Back cover</dt><dd>{{#if selectedDocument.includesBackCover}}Included{{else}}Not included{{/if}}</dd></div>
+          </dl>
+        </section>
+
+        <div class="idoc-dimension-notice idoc-extension-notice">
+          <i class="fa-solid fa-rotate"></i>
+          <div>
+            <strong>The existing book is updated in place.</strong><br>
+            <small>Its preset, covers, ownership, Journal links, and previous Markdown remain unchanged. New text is stored as its own editable content section, appended after a blank paragraph, and the complete book is rendered again.</small>
+          </div>
+        </div>
+
+        <section class="idoc-append-page-flow" aria-labelledby="idoc-append-page-flow-label">
+          <label id="idoc-append-page-flow-label" for="idoc-append-start-new-page">
+            <input
+              id="idoc-append-start-new-page"
+              type="checkbox"
+              name="startOnNewPage"
+              {{#if extension.startOnNewPage}}checked{{/if}}
+            >
+            <span>
+              <strong>{{localize "ILLUMINATED.Studio.StartAppendedSectionNewPage"}}</strong>
+              <small>{{localize "ILLUMINATED.Studio.StartAppendedSectionNewPageHint"}}</small>
+            </span>
+          </label>
+        </section>
+
+        <section class="idoc-studio-field idoc-section-label-field">
+          <label for="idoc-append-section-label" class="idoc-field-label">{{localize "ILLUMINATED.Studio.AppendSectionLabel"}}</label>
+          <small class="idoc-field-hint">{{localize "ILLUMINATED.Studio.AppendSectionLabelHint"}}</small>
+          <input id="idoc-append-section-label" name="appendLabel" type="text" value="{{extension.appendLabel}}" autocomplete="off">
+        </section>
+
+        <label class="idoc-text-label">Additional text or Markdown</label>
+        <textarea name="appendText" class="idoc-document-text idoc-extension-text" placeholder="Paste the next session log, chapter, entry, or continuation here.">{{extension.appendText}}</textarea>
+
+        {{#if hasAppendExtensions}}
+          <section class="idoc-extension-contributions">
+            <h3><i class="fa-solid fa-puzzle-piece"></i> New section metadata</h3>
+            {{> "modules/runyth-illuminated-documents/templates/extension-fields.hbs" groups=appendBlockExtensionGroups}}
+          </section>
+        {{/if}}
+
+        <button type="button" class="idoc-edit-selected-book" data-action="edit-selected">
+          <i class="fa-solid fa-pen-to-square"></i>
+          Edit sections, order, or preset
+        </button>
+
+        <footer class="idoc-actions">
+          <button type="button" data-action="preview">
+            <i class="fa-solid fa-eye"></i>
+            Preview updated book
+          </button>
+          <button type="button" data-action="render">
+            <i class="fa-solid fa-book-medical"></i>
+            Append and update
+          </button>
+        </footer>
+      {{else}}
+        <div class="idoc-no-existing-documents">
+          <i class="fa-solid fa-book-circle-xmark"></i>
+          <h3>No extendable books are available</h3>
+          <p>Only Illuminated Documents that you own can be extended. A Game Master can extend every Illuminated Document.</p>
+          <button type="button" data-mode="create">
+            <i class="fa-solid fa-file-circle-plus"></i>
+            Create the first document
+          </button>
+        </div>
+      {{/if}}
+    {{/if}}
+  </section>
+
+  <section class="idoc-preview-pane">
+    {{#if hasPreview}}
+      <header class="idoc-preview-header">
+        <div>
+          <strong>{{previewCount}} logical page{{#unless (eq previewCount 1)}}s{{/unless}}</strong>
+          {{#if previewDescription}}<small>{{previewDescription}}</small>{{/if}}
+        </div>
+        <small>{{localize "ILLUMINATED.Virtual.PreviewHint"}}</small>
+      </header>
+      <div class="idoc-preview-page-list" data-virtual-preview></div>
+    {{else}}
+      <div class="idoc-empty-preview">
+        <i class="fa-regular fa-image"></i>
+        <p>{{#if isExtendMode}}The complete updated book preview appears here.{{else}}Preview pages appear here.{{/if}}</p>
+      </div>
+    {{/if}}
+  </section>
+</div>

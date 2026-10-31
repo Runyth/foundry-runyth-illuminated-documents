@@ -1,0 +1,72 @@
+<div class="idoc-shell idoc-preset-manager">
+  <aside class="idoc-template-list">
+    <button type="button" data-action="new"><i class="fa-solid fa-plus"></i> New preset</button>
+    {{#each presets}}<button type="button" data-action="select" data-id="{{id}}" class="{{#if (eq id ../active.id)}}active{{/if}}"><strong>{{name}}</strong><small>{{#if (eq accessMode "gm-only")}}GM only{{else}}Shared{{/if}}</small></button>{{/each}}
+  </aside>
+  <main class="idoc-preset-editor">
+    {{#if active}}
+      <section class="idoc-preset-section">
+        <h3>Book composition</h3>
+        {{#unless hasTemplates}}<div class="idoc-access-warning"><i class="fa-solid fa-triangle-exclamation"></i>No visual templates are available to this account. Ask the GM to share at least one template.</div>{{/unless}}
+        <div class="form-group"><label>Preset name</label><input name="name" value="{{active.name}}"></div>
+        <div class="form-group"><label>Left page</label><select name="leftTemplateId">{{#each templates}}<option value="{{id}}" {{#if (eq id ../active.leftTemplateId)}}selected{{/if}}>{{name}}</option>{{/each}}</select></div>
+        <div class="form-group"><label>Right page</label><select name="rightTemplateId">{{#each templates}}<option value="{{id}}" {{#if (eq id ../active.rightTemplateId)}}selected{{/if}}>{{name}}</option>{{/each}}</select></div>
+        <div class="form-group"><label>Front cover (optional)</label><select name="frontCoverTemplateId"><option value="">None</option>{{#each templates}}<option value="{{id}}" {{#if (eq id ../active.frontCoverTemplateId)}}selected{{/if}}>{{name}}</option>{{/each}}</select></div>
+        <div class="form-group"><label>Back cover (optional)</label><select name="backCoverTemplateId"><option value="">None</option>{{#each templates}}<option value="{{id}}" {{#if (eq id ../active.backCoverTemplateId)}}selected{{/if}}>{{name}}</option>{{/each}}</select></div>
+        <p class="idoc-help">Body pages alternate left, right, left, right. Covers are background-only pages and do not consume pasted text.</p>
+      </section>
+
+      <section class="idoc-preset-section">
+        <h3>Preset naming rules</h3>
+        <p class="idoc-help">These values are combined with the global rules. A preset format override replaces the global format for documents created with this preset.</p>
+        <div class="idoc-grid-2">
+          <label>Preset prefix<input name="namePrefix" value="{{active.namePrefix}}" placeholder="Example: Travel Log — "></label>
+          <label>Preset suffix<input name="nameSuffix" value="{{active.nameSuffix}}" placeholder="Example:  — Volume I"></label>
+        </div>
+        <div class="form-group stacked">
+          <label>Format override (optional)</label>
+          <input name="nameFormat" value="{{active.nameFormat}}" placeholder="Leave empty to use the global format">
+          <p class="notes">Supports the same tokens as Document Management, including <code>{title}</code>, <code>{presetPrefix}</code>, <code>{presetSuffix}</code>, <code>{date}</code>, and <code>{user}</code>.</p>
+        </div>
+        <div class="idoc-name-preview"><span>Example resulting name</span><strong data-preset-name-preview class="{{#if namePreviewError}}is-error{{/if}}">{{#if namePreviewError}}{{namePreviewError}}{{else}}{{namePreview}}{{/if}}</strong></div>
+      </section>
+
+      {{#if hasUnavailablePresetExtensions}}
+        <section class="idoc-preset-section idoc-extension-unavailable-warning" role="status">
+          <h3><i class="fa-solid fa-plug-circle-xmark"></i> {{localize "ILLUMINATED.Extensions.Unavailable"}}</h3>
+          <p>{{localize "ILLUMINATED.Extensions.PreservedUnknown"}}</p>
+          <p>{{#each unavailablePresetExtensionIds}}<code>{{this}}</code>{{/each}}</p>
+        </section>
+      {{/if}}
+
+      {{#if hasPresetExtensions}}
+        <section class="idoc-preset-section idoc-extension-contributions">
+          <h3><i class="fa-solid fa-puzzle-piece"></i> Extension defaults</h3>
+          <p class="idoc-help">These defaults are offered to new documents and content sections created with this preset. Explicit document and block values take precedence.</p>
+          {{> "modules/runyth-illuminated-documents/templates/extension-fields.hbs" groups=presetDocumentExtensionGroups}}
+          {{> "modules/runyth-illuminated-documents/templates/extension-fields.hbs" groups=presetBlockExtensionGroups}}
+        </section>
+      {{/if}}
+
+      <section class="idoc-preset-section idoc-resource-access-section">
+        <h3>Preset availability</h3>
+        {{#if isGM}}
+          <p class="idoc-help">Availability controls who may use this preset in ID Studio. A player also needs the global <strong>Manage presets</strong> capability before they may edit it.</p>
+          <div class="idoc-access-mode-options">
+            <label><input type="radio" name="accessMode" value="gm-only" {{#if isGmOnly}}checked{{/if}}> <span><i class="fa-solid fa-lock"></i><strong>GM only</strong><small>Only Game Masters can use or edit this preset.</small></span></label>
+            <label><input type="radio" name="accessMode" value="selected-users" {{#if isSelectedUsers}}checked{{/if}}> <span><i class="fa-solid fa-user-group"></i><strong>Selected players</strong><small>Selected players may use it; managers among them may edit it.</small></span></label>
+          </div>
+          <div class="idoc-resource-user-grid {{#unless isSelectedUsers}}is-disabled{{/unless}}">
+            {{#each accessUsers}}<label><input type="checkbox" name="allowedUserIds" value="{{id}}" {{#if checked}}checked{{/if}}><span>{{name}}{{#if active}} <small>Online</small>{{/if}}</span></label>{{/each}}
+          </div>
+        {{else}}
+          <div class="idoc-managed-resource-notice"><i class="fa-solid fa-user-check"></i><div><strong>This preset is shared with you.</strong><p>You may edit its composition and naming. Only a Game Master can change who else may use or manage it.</p></div></div>
+        {{/if}}
+      </section>
+
+      <footer class="idoc-actions"><button type="button" data-action="delete"><i class="fa-solid fa-trash"></i> Delete</button><button type="button" data-action="save"><i class="fa-solid fa-floppy-disk"></i> Save presets</button></footer>
+    {{else}}
+      <div class="idoc-no-managed-resources"><i class="fa-solid fa-book-circle-xmark"></i><h3>No shared presets</h3><p>Create a new preset, or ask a Game Master to share an existing preset with your account.</p><button type="button" data-action="new"><i class="fa-solid fa-plus"></i>Create preset</button></div>
+    {{/if}}
+  </main>
+</div>

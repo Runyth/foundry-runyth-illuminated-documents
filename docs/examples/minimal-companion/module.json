@@ -1,0 +1,22 @@
+{
+  "id": "runyth-illuminated-documents-example-companion",
+  "title": "Illuminated Documents Example Companion",
+  "description": "Minimal extension API example.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "relationships": {
+    "requires": [
+      {
+        "id": "runyth-illuminated-documents",
+        "type": "module",
+        "compatibility": {
+          "minimum": "1.9.0"
+        }
+      }
+    ]
+  },
+  "esmodules": ["scripts/main.js"]
+}

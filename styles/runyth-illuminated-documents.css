@@ -1,0 +1,2560 @@
+#illuminated-template-manager .window-content,
+#illuminated-document-studio .window-content,
+#illuminated-permissions .window-content { padding: 0; overflow: hidden; }
+.idoc-shell { height: 100%; display: flex; background: rgba(20, 18, 16, 0.96); color: var(--color-text-light-highlight); }
+.idoc-shell input, .idoc-shell select, .idoc-shell textarea { color: var(--color-text-light-highlight); background: rgba(0,0,0,.35); border: 1px solid var(--color-border-light-tertiary); }
+.idoc-sidebar { width: 230px; border-right: 1px solid var(--color-border-light-tertiary); display: flex; flex-direction: column; }
+.idoc-toolbar { display: flex; gap: 4px; padding: 8px; }
+.idoc-toolbar button { flex: 1; }
+.idoc-template-list { overflow-y: auto; padding: 4px 8px 8px; }
+.idoc-template-list button { width: 100%; text-align: left; margin: 3px 0; padding: 8px; display: flex; flex-direction: column; }
+.idoc-template-list button.active { outline: 2px solid var(--color-warm-2); }
+.idoc-template-list small { opacity: .65; }
+.idoc-manager-content { min-width: 0; flex: 1; display: grid; grid-template-columns: minmax(360px, 1fr) minmax(360px, .9fr); overflow: hidden; }
+.idoc-preview-panel { padding: 18px; overflow: auto; background: rgba(0,0,0,.2); }
+.idoc-preview-stage { width: 100%; max-height: 650px; background-size: 100% 100%; background-repeat: no-repeat; position: relative; box-shadow: 0 8px 28px #000; cursor: crosshair; }
+.idoc-region-overlay { position: absolute; border: 2px dashed #ffdb78; background: rgba(255,219,120,.15); pointer-events: none; }
+.idoc-fields { padding: 16px; overflow-y: auto; }
+.idoc-grid-2, .idoc-grid-3, .idoc-grid-4 { display: grid; gap: 8px; margin: 8px 0; }
+.idoc-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.idoc-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.idoc-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.idoc-grid-2 label, .idoc-grid-3 label, .idoc-grid-4 label { display: flex; flex-direction: column; gap: 4px; font-size: .85em; }
+.idoc-section-heading { display: flex; align-items: center; justify-content: space-between; }
+.idoc-section-heading button { width: 34px; }
+.idoc-fields details { margin-top: 14px; }
+.idoc-fields details textarea { width: 100%; font-family: monospace; }
+.idoc-fields .sheet-footer { position: sticky; bottom: 0; padding-top: 12px; background: linear-gradient(transparent, rgba(20,18,16,.98) 25%); }
+.idoc-studio { display: grid; grid-template-columns: minmax(390px, .8fr) minmax(420px, 1.2fr); }
+.idoc-compose { padding: 18px; overflow-y: auto; display: flex; flex-direction: column; }
+.idoc-template-summary { display: flex; gap: 10px; align-items: center; margin: 8px 0 14px; padding: 8px; background: rgba(255,255,255,.05); }
+.idoc-template-summary img { width: 64px; height: 82px; object-fit: cover; }
+.idoc-template-summary div { display: flex; flex-direction: column; }
+.idoc-template-summary small { opacity: .7; }
+.idoc-text-label { margin-bottom: 5px; }
+.idoc-document-text { flex: 1; min-height: 390px; resize: vertical; padding: 10px; font-family: var(--font-body); line-height: 1.4; }
+.idoc-actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 8px; padding-top: 12px; }
+.idoc-preview-results { overflow: auto; padding: 18px; background: #111; text-align: center; }
+.idoc-preview-results > img { display: block; max-width: 100%; margin: 0 auto 18px; box-shadow: 0 8px 26px #000; }
+.idoc-empty-preview { height: 100%; display: grid; place-content: center; opacity: .55; }
+.idoc-empty-preview i { font-size: 5rem; }
+@media (max-width: 850px) {
+  .idoc-manager-content, .idoc-studio { grid-template-columns: 1fr; }
+  .idoc-preview-panel, .idoc-preview-results { display: none; }
+  .idoc-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+.idoc-dimension-notice {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.idoc-dimension-notice > i {
+  margin-top: 0.15rem;
+}
+
+/* High-contrast dark palette for Foundry themes with muted default controls. */
+.idoc-shell {
+  background: #171513;
+  color: #f4eee4;
+}
+
+.idoc-shell label,
+.idoc-shell strong,
+.idoc-shell summary,
+.idoc-shell p,
+.idoc-shell small {
+  color: inherit;
+}
+
+.idoc-shell input,
+.idoc-shell select,
+.idoc-shell textarea {
+  background: #292521;
+  border-color: #8f8375;
+  color: #fffaf0;
+}
+
+.idoc-shell input::placeholder,
+.idoc-shell textarea::placeholder {
+  color: #c9bfb2;
+  opacity: 1;
+}
+
+.idoc-shell button {
+  background: #37312b;
+  border-color: #9a8c7c;
+  color: #fffaf0;
+}
+
+.idoc-shell button:hover,
+.idoc-shell button:focus {
+  background: #51473d;
+  border-color: #f0c86e;
+  color: #ffffff;
+}
+
+.idoc-template-list button.active {
+  background: #4a4035;
+  outline-color: #ffd978;
+}
+
+.idoc-template-summary,
+.idoc-dimension-notice {
+  background: #26221e;
+  border-color: #84796c;
+}
+
+.idoc-preview-results {
+  background: #0d0c0b;
+}
+
+/* Keep the text editor and actions visually close together. */
+.idoc-document-text {
+  flex: 0 0 auto;
+  height: clamp(260px, 42vh, 430px);
+  min-height: 220px;
+  max-height: 55vh;
+}
+
+.idoc-compose > .notes {
+  margin: 5px 0 3px;
+}
+
+.idoc-actions {
+  padding-top: 4px;
+  margin-top: 0;
+}
+
+/* Persistent, movable, resizeable text-region overlay. */
+.idoc-region-overlay {
+  pointer-events: auto;
+  cursor: move;
+  border: 2px solid #ffd978;
+  background: rgba(255, 217, 120, 0.18);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.75), inset 0 0 0 1px rgba(0, 0, 0, 0.45);
+}
+
+.idoc-region-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #211b14;
+  border-radius: 50%;
+  background: #ffe39b;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.idoc-region-handle-nw { left: 0; top: 0; cursor: nwse-resize; }
+.idoc-region-handle-n { left: 50%; top: 0; cursor: ns-resize; }
+.idoc-region-handle-ne { left: 100%; top: 0; cursor: nesw-resize; }
+.idoc-region-handle-e { left: 100%; top: 50%; cursor: ew-resize; }
+.idoc-region-handle-se { left: 100%; top: 100%; cursor: nwse-resize; }
+.idoc-region-handle-s { left: 50%; top: 100%; cursor: ns-resize; }
+.idoc-region-handle-sw { left: 0; top: 100%; cursor: nesw-resize; }
+.idoc-region-handle-w { left: 0; top: 50%; cursor: ew-resize; }
+.idoc-cover-options { display:flex; gap:1rem; flex-wrap:wrap; padding:.35rem .5rem; border:1px solid rgba(255,255,255,.18); border-radius:4px; }
+.idoc-preset-manager { display:grid; grid-template-columns:240px 1fr; gap:1rem; height:100%; }
+.idoc-preset-editor { display:flex; flex-direction:column; gap:.7rem; }
+.idoc-live-document { display:flex; flex-direction:column; align-items:center; gap:1.25rem; background:#171412; padding:1rem; }
+.idoc-live-page { max-width:100%; height:auto; box-shadow:0 4px 18px rgba(0,0,0,.65); }
+.idoc-live-loading { padding:2rem; text-align:center; color:#f4ead7; }
+
+/* Multi-page preview: every generated cover and body page remains visible and scrollable. */
+.idoc-preview-pane {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 18px;
+  background: #0d0c0b;
+}
+
+.idoc-preview-header {
+  position: sticky;
+  top: -18px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  margin: -18px -18px 18px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #5d544a;
+  background: rgba(20, 18, 16, 0.96);
+}
+
+.idoc-preview-header small {
+  color: #d5cbbd;
+  text-align: right;
+}
+
+.idoc-preview-page-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.idoc-preview-page {
+  width: min(100%, 760px);
+  margin: 0;
+}
+
+.idoc-preview-page figcaption,
+.idoc-live-page-label {
+  margin: 0 0 7px;
+  color: #f5ead8;
+  font-weight: 600;
+  text-align: center;
+}
+
+.idoc-rendered-preview {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  box-shadow: 0 8px 26px #000;
+}
+
+/* Reworked player-permission window. */
+.idoc-permissions {
+  min-width: 600px;
+  min-height: 500px;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.idoc-permissions-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid #5d544a;
+  background: #211e1a;
+}
+
+.idoc-permissions-header h2 {
+  margin: 0 0 4px;
+  color: #fff8eb;
+  font-size: 1.35rem;
+}
+
+.idoc-permissions-header p {
+  margin: 0;
+  color: #d6ccbf;
+  line-height: 1.4;
+}
+
+.idoc-permissions-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid #ad9363;
+  border-radius: 8px;
+  background: #332d26;
+  color: #f3d58a;
+  font-size: 1.4rem;
+}
+
+.idoc-permission-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  border-bottom: 1px solid #5d544a;
+  background: #5d544a;
+}
+
+.idoc-permission-summary > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 11px 8px;
+  background: #292521;
+}
+
+.idoc-permission-summary strong {
+  color: #ffe09a;
+  font-size: 1.25rem;
+}
+
+.idoc-permission-summary span {
+  color: #cfc5b8;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.idoc-permission-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 18px 10px;
+}
+
+.idoc-permission-toolbar > div:first-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.idoc-permission-toolbar small {
+  color: #c9bfb2;
+}
+
+.idoc-permission-bulk-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.idoc-permission-bulk-actions button {
+  width: auto;
+  min-width: 92px;
+  margin: 0;
+  padding: 6px 10px;
+}
+
+.idoc-user-list {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 6px 18px 16px;
+}
+
+.idoc-user-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 64px;
+  padding: 10px 12px;
+  border: 1px solid #6f655a;
+  border-radius: 7px;
+  background: #27231f;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+}
+
+.idoc-user-card:hover {
+  border-color: #bda36f;
+  background: #302a24;
+}
+
+.idoc-user-card:has(.idoc-user-checkbox:checked) {
+  border-color: #e5bd64;
+  background: #393026;
+  box-shadow: inset 3px 0 0 #e5bd64;
+}
+
+.idoc-user-checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #d7ad50;
+}
+
+.idoc-user-avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid #817464;
+  border-radius: 50%;
+  background: #171513;
+  color: #fff2d4;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.idoc-user-details {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.idoc-user-details strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idoc-user-details small {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.idoc-user-details small i {
+  font-size: 0.55rem;
+}
+
+.idoc-user-details .is-online {
+  color: #a8dba8;
+}
+
+.idoc-user-details .is-offline {
+  color: #bdb4a8;
+}
+
+.idoc-access-state {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid #7c6e5b;
+  border-radius: 999px;
+  color: #bcb2a5;
+  font-size: 0.78rem;
+  opacity: 0.45;
+}
+
+.idoc-user-card:has(.idoc-user-checkbox:checked) .idoc-access-state {
+  border-color: #cba554;
+  color: #ffe3a0;
+  opacity: 1;
+}
+
+.idoc-permission-empty {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: #cfc5b8;
+  text-align: center;
+}
+
+.idoc-permission-empty > i {
+  color: #8f8375;
+  font-size: 2.5rem;
+}
+
+.idoc-permission-empty p {
+  margin: 0;
+}
+
+.idoc-permission-footer {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.45fr) minmax(190px, 1fr);
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid #5d544a;
+  background: #211e1a;
+}
+
+.idoc-permission-footer button {
+  margin: 0;
+}
+
+.idoc-primary-action {
+  border-color: #d0aa55 !important;
+  background: #59472c !important;
+}
+
+.idoc-primary-action:hover,
+.idoc-primary-action:focus {
+  background: #715a36 !important;
+}
+
+/* Live Journal rendering supports v1.3.0 legacy placeholders and v1.3.1 mounts. */
+.idoc-live-document-root,
+.idoc-live-document {
+  width: 100%;
+  min-height: 180px;
+}
+
+.idoc-live-document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: #171412;
+}
+
+.idoc-live-page-frame {
+  width: min(100%, 900px);
+  margin: 0;
+}
+
+.idoc-live-page {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65);
+}
+
+.idoc-live-loading {
+  padding: 2rem;
+  color: #f4ead7;
+  text-align: center;
+}
+
+.idoc-live-render-error {
+  display: block;
+  padding: 1rem;
+  border: 1px solid #b95b52;
+  background: #3c211f;
+  color: #fff0ed;
+}
+
+@media (max-width: 700px) {
+  .idoc-permissions {
+    min-width: 0;
+  }
+
+  .idoc-permission-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .idoc-permission-bulk-actions button {
+    flex: 1;
+  }
+
+  .idoc-user-card {
+    grid-template-columns: auto auto minmax(0, 1fr);
+  }
+
+  .idoc-access-state {
+    display: none;
+  }
+}
+
+/* v1.4.0: create/extend workflow. */
+.idoc-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 4px;
+  border: 1px solid #665c50;
+  border-radius: 7px;
+  background: #100f0d;
+}
+
+.idoc-mode-switch button {
+  min-height: 38px;
+  margin: 0;
+  border-color: transparent;
+  background: transparent;
+  color: #d9cfc1;
+}
+
+.idoc-mode-switch button.active {
+  border-color: #caa75e;
+  background: #42372b;
+  color: #fff7e7;
+  box-shadow: inset 0 0 0 1px rgba(255, 224, 154, 0.15);
+}
+
+.idoc-existing-document-picker {
+  margin-bottom: 12px;
+}
+
+.idoc-extension-summary {
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid #746858;
+  border-radius: 8px;
+  background: #211e1a;
+}
+
+.idoc-extension-summary > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 13px 14px;
+  border-bottom: 1px solid #5f5549;
+  background: #2a251f;
+}
+
+.idoc-extension-summary > header > div:last-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.idoc-extension-summary > header strong,
+.idoc-extension-summary > header small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idoc-extension-summary > header small {
+  color: #d4c7b5;
+}
+
+.idoc-extension-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #a98b52;
+  border-radius: 7px;
+  background: #171411;
+  color: #f1d58e;
+  font-size: 1.15rem;
+}
+
+.idoc-extension-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: #5f5549;
+}
+
+.idoc-extension-stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 9px 5px;
+  background: #26221e;
+}
+
+.idoc-extension-stats strong {
+  color: #ffe09a;
+  font-size: 1.05rem;
+}
+
+.idoc-extension-stats span {
+  color: #c9beaf;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.idoc-extension-summary dl {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 10px 14px 12px;
+}
+
+.idoc-extension-summary dl > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.7fr) 1fr;
+  gap: 12px;
+}
+
+.idoc-extension-summary dt {
+  color: #bfb4a5;
+}
+
+.idoc-extension-summary dd {
+  margin: 0;
+  color: #fff3df;
+  text-align: right;
+}
+
+.idoc-extension-notice {
+  margin-top: 0;
+}
+
+.idoc-extension-text {
+  height: clamp(230px, 34vh, 360px);
+}
+
+.idoc-no-existing-documents {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 28px;
+  text-align: center;
+}
+
+.idoc-no-existing-documents > i {
+  color: #c7aa69;
+  font-size: 3.5rem;
+}
+
+.idoc-no-existing-documents h3,
+.idoc-no-existing-documents p {
+  margin: 0;
+}
+
+.idoc-no-existing-documents p {
+  max-width: 430px;
+  color: #cfc4b6;
+  line-height: 1.45;
+}
+
+.idoc-no-existing-documents button {
+  width: auto;
+  margin-top: 8px;
+  padding-inline: 18px;
+}
+
+.idoc-preview-header > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.idoc-preview-header > div:first-child small {
+  color: #d9c9ae;
+  text-align: left;
+}
+
+.idoc-live-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  width: min(100%, 900px);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid #776a59;
+  border-radius: 7px;
+  background: rgba(34, 30, 25, 0.97);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.45);
+}
+
+.idoc-live-toolbar-summary {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.idoc-live-toolbar-summary strong,
+.idoc-live-toolbar-summary small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idoc-live-toolbar-summary small {
+  color: #d2c5b3;
+}
+
+.idoc-live-toolbar button {
+  width: auto;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 7px 12px;
+  border: 1px solid #c7a45a;
+  background: #4a3b2c;
+  color: #fff4dc;
+}
+
+@media (max-width: 700px) {
+  .idoc-mode-switch,
+  .idoc-extension-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .idoc-extension-summary dl > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .idoc-extension-summary dd {
+    text-align: left;
+  }
+
+  .idoc-live-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+/* Document-management, preset naming, and dedicated viewer. */
+#illuminated-document-management .window-content,
+#illuminated-document-viewer .window-content,
+#illuminated-preset-manager .window-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.idoc-document-management {
+  min-width: 620px;
+  min-height: 560px;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.idoc-management-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid #5d544a;
+  background: #211e1a;
+}
+
+.idoc-management-header h2,
+.idoc-management-section h3 {
+  margin: 0;
+  color: #fff8eb;
+}
+
+.idoc-management-header p,
+.idoc-management-section header p {
+  margin: 4px 0 0;
+  color: #d6ccbf;
+  line-height: 1.4;
+}
+
+.idoc-management-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid #ad9363;
+  border-radius: 8px;
+  background: #332d26;
+  color: #f3d58a;
+  font-size: 1.35rem;
+}
+
+.idoc-management-body {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px 20px;
+}
+
+.idoc-management-section,
+.idoc-preset-section {
+  padding: 14px;
+  border: 1px solid #6f655a;
+  border-radius: 8px;
+  background: #26221e;
+}
+
+.idoc-management-section > header {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.idoc-management-section > header > i {
+  margin-top: 3px;
+  color: #e1bd6e;
+  font-size: 1.05rem;
+  text-align: center;
+}
+
+.idoc-management-section code,
+.idoc-preset-section code {
+  color: #ffe1a0;
+}
+
+.idoc-name-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 10px;
+  padding: 9px 11px;
+  border: 1px solid #726656;
+  border-radius: 6px;
+  background: #1b1815;
+}
+
+.idoc-name-preview span {
+  color: #bfb4a6;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.045em;
+}
+
+.idoc-name-preview strong {
+  overflow-wrap: anywhere;
+  color: #ffe2a0;
+}
+
+.idoc-name-preview strong.is-error {
+  color: #ffaaa2;
+}
+
+.idoc-studio-name-preview {
+  margin: -2px 0 10px;
+}
+
+.idoc-view-mode-help {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  color: #d1c6b8;
+}
+
+.idoc-view-mode-help li + li {
+  margin-top: 5px;
+}
+
+.idoc-management-footer {
+  padding: 13px 18px;
+  border-top: 1px solid #5d544a;
+  background: #211e1a;
+}
+
+.idoc-management-footer button {
+  width: 100%;
+  margin: 0;
+}
+
+.idoc-preset-manager {
+  min-width: 700px;
+  padding: 0;
+}
+
+.idoc-preset-manager > .idoc-template-list {
+  padding: 10px;
+  border-right: 1px solid #5d544a;
+}
+
+.idoc-preset-editor {
+  min-width: 0;
+  overflow: auto;
+  padding: 16px;
+}
+
+.idoc-preset-section + .idoc-preset-section {
+  margin-top: 12px;
+}
+
+.idoc-preset-section h3 {
+  margin: 0 0 9px;
+}
+
+.idoc-live-toolbar-actions,
+.idoc-viewer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.idoc-dedicated-viewer {
+  min-width: 620px;
+  min-height: 520px;
+  flex-direction: column;
+  overflow: hidden;
+  background: #11100e;
+}
+
+.idoc-viewer-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #655b4f;
+  background: #211e1a;
+}
+
+.idoc-viewer-title {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.idoc-viewer-title strong,
+.idoc-viewer-title small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idoc-viewer-title small {
+  color: #cbbfaf;
+}
+
+.idoc-viewer-actions button {
+  width: auto;
+  margin: 0;
+  padding: 6px 10px;
+}
+
+.idoc-viewer-pages {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 18px;
+  background: #11100e;
+}
+
+@media (max-width: 700px) {
+  .idoc-document-management,
+  .idoc-dedicated-viewer {
+    min-width: 0;
+  }
+
+  .idoc-viewer-toolbar,
+  .idoc-live-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .idoc-live-toolbar-actions,
+  .idoc-viewer-actions {
+    justify-content: stretch;
+  }
+
+  .idoc-live-toolbar-actions button,
+  .idoc-viewer-actions button {
+    flex: 1 1 auto;
+  }
+}
+
+/* Structured existing-book editor. */
+#illuminated-document-editor .window-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.idoc-document-editor {
+  min-width: 860px;
+  min-height: 620px;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.idoc-editor-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #62584d;
+  background: #211e1a;
+}
+
+.idoc-editor-heading {
+  min-width: 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.idoc-editor-heading h2 {
+  overflow: hidden;
+  margin: 0 0 3px;
+  color: #fff8eb;
+  font-size: 1.2rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idoc-editor-heading p {
+  margin: 0;
+  color: #d0c5b7;
+}
+
+.idoc-editor-icon {
+  display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #aa8f5d;
+  border-radius: 8px;
+  background: #342e27;
+  color: #f2d17f;
+  font-size: 1.15rem;
+}
+
+.idoc-editor-header > button {
+  width: auto;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.idoc-editor-layout {
+  min-height: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 260px minmax(420px, 1.12fr) minmax(360px, .88fr);
+  overflow: hidden;
+}
+
+.idoc-editor-settings {
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  border-right: 1px solid #62584d;
+  background: #1c1916;
+}
+
+.idoc-editor-panel {
+  padding: 12px;
+  border: 1px solid #675d52;
+  border-radius: 8px;
+  background: #28231f;
+}
+
+.idoc-editor-panel + .idoc-editor-panel {
+  margin-top: 10px;
+}
+
+.idoc-editor-panel h3 {
+  margin: 0 0 10px;
+  color: #fff3d7;
+  font-size: .98rem;
+}
+
+.idoc-editor-panel h3 i {
+  width: 20px;
+  color: #e4bd67;
+  text-align: center;
+}
+
+.idoc-editor-panel > label:not(.idoc-editor-check) {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #eee5d9;
+  font-weight: 600;
+}
+
+.idoc-editor-preset-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 10px 0;
+  padding: 9px;
+  border: 1px solid #675d52;
+  border-radius: 6px;
+  background: #1b1815;
+}
+
+.idoc-editor-preset-summary small,
+.idoc-editor-panel .idoc-help {
+  color: #cec3b5;
+  line-height: 1.4;
+}
+
+.idoc-editor-check {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  margin-top: 8px;
+  color: #f4ede3;
+}
+
+.idoc-editor-check input {
+  flex: 0 0 auto;
+}
+
+.idoc-editor-facts {
+  margin: 0;
+}
+
+.idoc-editor-facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.idoc-editor-facts dt {
+  color: #cbbfaf;
+}
+
+.idoc-editor-facts dd {
+  margin: 0;
+  color: #fff3d7;
+  text-align: right;
+}
+
+.idoc-editor-migration {
+  border-color: #9a7841;
+  background: #33291b;
+}
+
+.idoc-editor-migration p {
+  margin: 0;
+  color: #ffe4ad;
+  line-height: 1.45;
+}
+
+.idoc-entry-editor {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #171513;
+}
+
+.idoc-entry-editor-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid #62584d;
+  background: #24201c;
+}
+
+.idoc-entry-editor-header h3,
+.idoc-entry-editor-header p {
+  margin: 0;
+}
+
+.idoc-entry-editor-header h3 {
+  color: #fff7e7;
+}
+
+.idoc-entry-editor-header p {
+  margin-top: 3px;
+  color: #cfc4b6;
+}
+
+.idoc-entry-editor-header button {
+  width: auto;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.idoc-entry-list {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+}
+
+.idoc-entry-card {
+  position: relative;
+  margin: 0 0 12px;
+  border: 1px solid #706558;
+  border-radius: 8px;
+  background: #28231f;
+  box-shadow: 0 3px 10px rgba(0,0,0,.28);
+}
+
+.idoc-entry-card:last-child {
+  margin-bottom: 0;
+}
+
+.idoc-entry-card.is-dragging {
+  opacity: .42;
+}
+
+.idoc-entry-card.is-drop-before::before,
+.idoc-entry-card.is-drop-after::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 5;
+  height: 3px;
+  border-radius: 3px;
+  background: #ffd978;
+  box-shadow: 0 0 8px rgba(255,217,120,.75);
+}
+
+.idoc-entry-card.is-drop-before::before { top: -8px; }
+.idoc-entry-card.is-drop-after::after { bottom: -8px; }
+
+.idoc-entry-card-header {
+  display: grid;
+  grid-template-columns: 32px 32px minmax(0, 1fr) auto;
+  gap: 7px;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #5f554a;
+}
+
+.idoc-entry-drag,
+.idoc-entry-actions button {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.idoc-entry-drag {
+  cursor: grab;
+}
+
+.idoc-entry-drag:active {
+  cursor: grabbing;
+}
+
+.idoc-entry-number {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid #897965;
+  border-radius: 50%;
+  background: #1b1815;
+  color: #ffe09a;
+  font-weight: 700;
+}
+
+.idoc-entry-title-wrap {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.idoc-entry-title-wrap input {
+  width: 100%;
+  height: 30px;
+  font-weight: 700;
+}
+
+.idoc-entry-title-wrap small {
+  overflow: hidden;
+  color: #cbbfaf;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idoc-entry-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.idoc-entry-actions button[data-action="delete-entry"] {
+  color: #ffc0b8;
+}
+
+.idoc-entry-card textarea {
+  display: block;
+  width: calc(100% - 16px);
+  min-height: 155px;
+  margin: 8px;
+  padding: 9px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.idoc-editor-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid #62584d;
+  background: #24201c;
+}
+
+.idoc-editor-actions button {
+  margin: 0;
+}
+
+.idoc-editor-preview {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 18px;
+  background: #0d0c0b;
+}
+
+.idoc-editor-preview .idoc-empty-preview {
+  min-height: 100%;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .idoc-editor-layout {
+    grid-template-columns: 230px minmax(400px, 1fr);
+  }
+
+  .idoc-editor-preview {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .idoc-document-editor {
+    min-width: 0;
+  }
+
+  .idoc-editor-header,
+  .idoc-entry-editor-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .idoc-editor-layout {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .idoc-editor-settings,
+  .idoc-entry-editor {
+    overflow: visible;
+  }
+}
+
+.idoc-edit-selected-book {
+  width: 100%;
+  margin: 8px 0 2px;
+  border-color: #ad9363;
+  background: #332d26;
+}
+
+/* v1.6.1 storage and naming controls. */
+.idoc-folder-mode-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.idoc-folder-mode-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  min-height: 86px;
+  padding: 11px;
+  border: 1px solid #756a5e;
+  border-radius: 7px;
+  background: #1f1c19;
+  color: #f7ecda;
+  cursor: pointer;
+}
+
+.idoc-folder-mode-card:hover,
+.idoc-folder-mode-card.is-selected,
+.idoc-folder-mode-card:has(input:checked) {
+  border-color: #d2ae60;
+  background: #332b21;
+  box-shadow: inset 0 0 0 1px rgba(255, 224, 151, 0.2);
+}
+
+.idoc-folder-mode-card input {
+  margin-top: 3px;
+}
+
+.idoc-folder-mode-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.idoc-folder-mode-copy strong {
+  color: #fff7e7;
+  line-height: 1.25;
+}
+
+.idoc-folder-mode-copy small {
+  color: #d8cdbd;
+  line-height: 1.35;
+}
+
+.idoc-custom-folder-fields {
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #675e55;
+  border-radius: 7px;
+  background: #211e1b;
+  transition: opacity 120ms ease;
+}
+
+.idoc-custom-folder-fields.is-disabled {
+  opacity: 0.58;
+}
+
+.idoc-destination-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 12px;
+  border: 1px solid #8b7650;
+  border-radius: 7px;
+  background: #191714;
+}
+
+.idoc-destination-preview > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.idoc-destination-preview span {
+  color: #cfc2af;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.idoc-destination-preview strong {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: normal;
+  color: #fff2cf;
+}
+
+.idoc-destination-preview button {
+  width: auto;
+  max-width: 220px;
+  margin: 0;
+  padding-inline: 12px;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .idoc-folder-mode-list {
+    grid-template-columns: 1fr;
+  }
+
+  .idoc-destination-preview {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .idoc-destination-preview button {
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+  }
+}
+
+/* v1.7 granular module permissions and resource sharing. */
+.idoc-permissions-granular {
+  min-width: 820px;
+}
+
+.idoc-permission-summary-granular {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.idoc-permission-explanation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #5d544a;
+  background: #1d1a17;
+}
+
+.idoc-permission-explanation > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 8px;
+  align-content: start;
+  padding: 9px;
+  border: 1px solid #62584d;
+  border-radius: 6px;
+  background: #29241f;
+}
+
+.idoc-permission-explanation i {
+  grid-row: 1 / span 2;
+  margin-top: 2px;
+  color: #f0c96f;
+}
+
+.idoc-permission-explanation strong {
+  color: #fff3d5;
+}
+
+.idoc-permission-explanation span {
+  color: #d3c8ba;
+  font-size: .78rem;
+  line-height: 1.35;
+}
+
+.idoc-permission-matrix-header,
+.idoc-permission-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.45fr) repeat(3, minmax(150px, .8fr));
+  gap: 8px;
+  align-items: center;
+}
+
+.idoc-permission-matrix-header {
+  padding: 10px 18px 7px;
+  color: #e8dccb;
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .035em;
+}
+
+.idoc-permission-matrix-header > div:not(:first-child) {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  align-items: center;
+}
+
+.idoc-column-actions {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.idoc-column-actions button {
+  width: 25px;
+  height: 24px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font-size: .72rem;
+}
+
+.idoc-permission-matrix {
+  padding-top: 0;
+}
+
+.idoc-permission-row {
+  min-height: 66px;
+  padding: 9px 10px;
+  border: 1px solid #665c51;
+  border-radius: 7px;
+  background: #27231f;
+}
+
+.idoc-permission-row[data-grant-count="0"] {
+  opacity: .78;
+}
+
+.idoc-permission-player {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.idoc-permission-toggle {
+  position: relative;
+  display: block;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.idoc-permission-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.idoc-permission-toggle span {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  align-items: center;
+  min-height: 38px;
+  padding: 7px 8px;
+  border: 1px solid #75695c;
+  border-radius: 6px;
+  background: #191714;
+  color: #c9bfb1;
+  font-size: .82rem;
+  text-align: center;
+  transition: 120ms ease;
+}
+
+.idoc-permission-toggle input:checked + span {
+  border-color: #d0aa55;
+  background: #4a3a25;
+  color: #ffe7ad;
+  box-shadow: inset 0 0 0 1px rgba(255, 225, 156, .16);
+}
+
+.idoc-permission-toggle input:focus-visible + span {
+  outline: 2px solid #f4d37c;
+  outline-offset: 2px;
+}
+
+.idoc-resource-access-section {
+  margin-top: 12px;
+}
+
+.idoc-resource-access-section h3 {
+  margin: 0 0 8px;
+  color: #fff1cf;
+}
+
+.idoc-access-mode-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.idoc-access-mode-options > label {
+  position: relative;
+  cursor: pointer;
+}
+
+.idoc-access-mode-options input {
+  position: absolute;
+  opacity: 0;
+}
+
+.idoc-access-mode-options label > span {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 8px;
+  min-height: 66px;
+  align-content: center;
+  padding: 9px 11px;
+  border: 1px solid #6d6256;
+  border-radius: 6px;
+  background: #1b1815;
+}
+
+.idoc-access-mode-options label > span > i {
+  grid-row: 1 / span 2;
+  margin-top: 3px;
+  color: #d8b35e;
+}
+
+.idoc-access-mode-options label > span > strong {
+  color: #f7ead0;
+}
+
+.idoc-access-mode-options label > span > small {
+  color: #c9beb0;
+  line-height: 1.3;
+}
+
+.idoc-access-mode-options input:checked + span {
+  border-color: #e0b85d;
+  background: #423522;
+  box-shadow: inset 3px 0 0 #e0b85d;
+}
+
+.idoc-resource-user-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  max-height: 190px;
+  overflow: auto;
+  padding: 7px;
+  border: 1px solid #62584d;
+  border-radius: 6px;
+  background: #181512;
+}
+
+.idoc-resource-user-grid > label {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 5px;
+  background: #29241f;
+}
+
+.idoc-resource-user-grid input {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  accent-color: #d4aa4e;
+}
+
+.idoc-resource-user-grid span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idoc-resource-user-grid small {
+  color: #a9d7a9;
+}
+
+.idoc-resource-user-grid.is-disabled {
+  opacity: .5;
+}
+
+.idoc-managed-resource-notice,
+.idoc-access-warning {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px solid #937d4e;
+  border-radius: 6px;
+  background: #322a1f;
+  color: #f5e6c6;
+}
+
+.idoc-managed-resource-notice > i,
+.idoc-access-warning > i {
+  margin-top: 3px;
+  color: #f0c96f;
+}
+
+.idoc-managed-resource-notice p,
+.idoc-access-warning p {
+  margin: 3px 0 0;
+  color: #d8cdbf;
+}
+
+.idoc-no-managed-resources {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 340px;
+  padding: 28px;
+  color: #d8cdbf;
+  text-align: center;
+}
+
+.idoc-no-managed-resources > i {
+  color: #b89a58;
+  font-size: 2.7rem;
+}
+
+.idoc-no-managed-resources h3,
+.idoc-no-managed-resources p {
+  margin: 0;
+}
+
+.idoc-no-managed-resources button {
+  width: auto;
+  margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+  .idoc-permissions-granular {
+    min-width: 620px;
+  }
+
+  .idoc-permission-explanation {
+    grid-template-columns: 1fr;
+  }
+
+  .idoc-permission-matrix-header {
+    display: none;
+  }
+
+  .idoc-permission-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .idoc-permission-player {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .idoc-permissions-granular {
+    min-width: 480px;
+  }
+
+  .idoc-permission-summary-granular,
+  .idoc-access-mode-options,
+  .idoc-resource-user-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .idoc-permission-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.idoc-user-details .idoc-resource-share-counts {
+  color: #c7bba9;
+  font-size: .74rem;
+}
+
+.idoc-user-details .idoc-resource-share-counts i {
+  color: #d8b35e;
+}
+
+.idoc-extension-field-group {
+  margin: 10px 0;
+  padding: 10px 12px 12px;
+  border: 1px solid #75664f;
+  border-radius: 7px;
+  background: #211d19;
+  color: #f2e8d5;
+}
+
+.idoc-extension-field-group > legend {
+  padding: 0 6px;
+  color: #ffe6a8;
+  font-weight: 700;
+}
+
+.idoc-extension-custom-field {
+  min-height: 32px;
+  width: 100%;
+}
+
+.idoc-extension-block-stage {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+
+.idoc-extension-api-summary {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content minmax(0, 1fr);
+  gap: 6px 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 9px 11px;
+  border: 1px solid #665a49;
+  border-radius: 6px;
+  background: #191613;
+}
+
+.idoc-extension-api-summary span {
+  color: #bfb3a3;
+}
+
+.idoc-extension-api-summary strong {
+  color: #fff0c8;
+}
+
+.idoc-extension-diagnostic-list {
+  display: grid;
+  gap: 8px;
+  max-height: 310px;
+  overflow: auto;
+  padding-right: 3px;
+}
+
+.idoc-extension-diagnostic-card {
+  padding: 10px 12px;
+  border: 1px solid #665d52;
+  border-radius: 7px;
+  background: #27221d;
+  color: #eee3d1;
+}
+
+.idoc-extension-diagnostic-card.has-error {
+  border-color: #b75a4d;
+  box-shadow: inset 3px 0 0 #c86756;
+}
+
+.idoc-extension-diagnostic-card > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.idoc-extension-diagnostic-card > header > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.idoc-extension-diagnostic-card code {
+  color: #d6c7af;
+  word-break: break-word;
+}
+
+.idoc-extension-diagnostic-card dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 9px 0 0;
+}
+
+.idoc-extension-diagnostic-card dl > div {
+  min-width: 0;
+  padding: 5px 7px;
+  border-radius: 5px;
+  background: #181512;
+}
+
+.idoc-extension-diagnostic-card dt {
+  color: #ad9f8e;
+  font-size: .75rem;
+}
+
+.idoc-extension-diagnostic-card dd {
+  margin: 2px 0 0;
+  color: #fff0c8;
+  word-break: break-word;
+}
+
+.idoc-extension-capabilities,
+.idoc-extension-error {
+  margin: 8px 0 0;
+  line-height: 1.4;
+}
+
+.idoc-extension-capabilities code {
+  display: inline-block;
+  margin: 2px 2px 0;
+  padding: 2px 5px;
+  border: 1px solid #685b49;
+  border-radius: 4px;
+  background: #181512;
+}
+
+.idoc-extension-error {
+  padding: 7px 8px;
+  border-radius: 5px;
+  background: #3b201d;
+  color: #ffd8d2;
+  word-break: break-word;
+}
+
+.idoc-extension-empty {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid #506951;
+  border-radius: 6px;
+  background: #1d2c20;
+  color: #d9f1d9;
+}
+
+.idoc-extension-empty p {
+  margin: 0;
+}
+
+.idoc-extension-diagnostic-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.idoc-extension-diagnostic-actions button {
+  min-height: 38px;
+}
+
+@media (max-width: 700px) {
+  .idoc-extension-api-summary,
+  .idoc-extension-diagnostic-card dl,
+  .idoc-extension-diagnostic-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.idoc-extension-unavailable-warning {
+  border-color: #8b6f35;
+  background: #2b2418;
+  color: #f8e7bd;
+}
+
+.idoc-extension-unavailable-warning code {
+  display: inline-block;
+  margin: 2px 4px 0 0;
+  color: #fff1c7;
+}
+
+.idoc-extension-field-error {
+  min-height: 34px;
+  padding: 8px 10px;
+  border: 1px solid #b85c4a;
+  border-radius: 5px;
+  background: #351d19;
+  color: #ffd8cf;
+}
+
+/* v1.9.1: stable New Document title and preset action layout. */
+.idoc-studio-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.idoc-field-label {
+  color: #fff1d0;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+}
+
+.idoc-field-hint {
+  display: block;
+  margin-top: 3px;
+  color: #d2c6b7 !important;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.idoc-document-title-field {
+  padding: 12px 13px;
+  border: 1px solid #8b7650;
+  border-radius: 8px;
+  background: #211d19;
+  box-shadow: inset 3px 0 0 #d6ac54;
+}
+
+.idoc-document-title-field input {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  padding: 7px 10px;
+  border-color: #a7957f;
+  background: #171411;
+  color: #fffaf0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.idoc-document-title-field input:hover {
+  border-color: #c9ae73;
+}
+
+.idoc-document-title-field input:focus,
+.idoc-document-title-field input:focus-visible {
+  border-color: #f0c86e;
+  outline: 2px solid rgba(240, 200, 110, 0.38);
+  outline-offset: 1px;
+  box-shadow: none;
+}
+
+.idoc-document-title-field input::placeholder {
+  color: #bfb4a6;
+  font-weight: 400;
+}
+
+.idoc-preset-picker {
+  margin-top: 2px;
+}
+
+.idoc-preset-control-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 8px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.idoc-preset-control-row > select {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  padding-inline: 9px 28px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idoc-preset-actions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 5px;
+  align-items: stretch;
+  white-space: nowrap;
+}
+
+.idoc-preset-actions button {
+  display: inline-flex;
+  width: auto;
+  min-width: 0;
+  height: 38px;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 6px 8px;
+  font-size: 0.8rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.idoc-preset-actions button i {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 560px) {
+  .idoc-preset-control-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .idoc-preset-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .idoc-preset-actions button {
+    width: 100%;
+  }
+}
+
+/* Section page-flow controls */
+.idoc-append-page-flow {
+  padding: 10px 12px;
+  border: 1px solid #75654d;
+  border-radius: 7px;
+  background: #211d18;
+}
+
+.idoc-append-page-flow > label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #fff4df;
+  cursor: pointer;
+}
+
+.idoc-append-page-flow input {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.idoc-append-page-flow span {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.idoc-append-page-flow small {
+  color: #d0c4b5;
+  line-height: 1.4;
+}
+
+.idoc-editor-page-flow-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.idoc-editor-page-flow-actions button {
+  width: 100%;
+  margin: 0;
+}
+
+.idoc-entry-page-flow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 0 8px 8px;
+  padding: 8px 9px;
+  border: 1px solid #62584d;
+  border-radius: 6px;
+  background: #1d1a17;
+  color: #f7efe3;
+  cursor: pointer;
+}
+
+.idoc-entry-page-flow input {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.idoc-entry-page-flow span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.idoc-entry-page-flow small {
+  color: #cbbfaf;
+  line-height: 1.35;
+}
+
+/* v1.10.1: shared window, form-control, and narrow-layout resilience. */
+.illuminated-documents-window .window-content {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.idoc-shell,
+.idoc-shell * {
+  box-sizing: border-box;
+}
+
+.idoc-shell {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.idoc-shell input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+.idoc-shell select,
+.idoc-shell textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 0.45rem 0.55rem;
+}
+
+.idoc-shell input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+.idoc-shell select {
+  min-height: 2.15rem;
+}
+
+.idoc-shell textarea {
+  padding: 0.65rem 0.7rem;
+}
+
+.idoc-shell .form-fields {
+  min-width: 0;
+}
+
+.idoc-shell .form-fields > input,
+.idoc-shell .form-fields > select,
+.idoc-shell .form-fields > textarea {
+  min-width: 0;
+}
+
+.idoc-shell button {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 2.15rem;
+  padding: 0.4rem 0.65rem;
+  gap: 0.4rem;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.idoc-shell button > i {
+  flex: 0 0 auto;
+}
+
+.idoc-shell[aria-busy="true"] {
+  cursor: progress;
+}
+
+.idoc-shell[aria-busy="true"] button:disabled {
+  cursor: progress;
+  opacity: 0.72;
+}
+
+.idoc-document-management,
+.idoc-preset-manager,
+.idoc-dedicated-viewer,
+.idoc-document-editor,
+.idoc-permissions,
+.idoc-permissions-granular {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .idoc-preset-manager {
+    grid-template-columns: minmax(0, 1fr);
+    overflow: auto;
+  }
+
+  .idoc-preset-manager > .idoc-template-list {
+    max-height: 190px;
+    border-right: 0;
+    border-bottom: 1px solid #5d544a;
+  }
+
+  .idoc-permissions-granular {
+    min-width: 0;
+  }
+
+  .idoc-permission-footer,
+  .idoc-editor-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .idoc-template-manager {
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .idoc-template-manager > .idoc-sidebar {
+    width: 100%;
+    max-height: 210px;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-light-tertiary);
+  }
+
+  .idoc-template-manager > .idoc-manager-content {
+    overflow: visible;
+  }
+
+  .idoc-grid-2,
+  .idoc-grid-3,
+  .idoc-grid-4,
+  .idoc-permission-summary,
+  .idoc-permission-summary-granular {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* v1.11.0 scalable virtualized book rendering. Logical pages stay lightweight;
+   only pages near the viewport own full-size raster canvases. */
+.idoc-virtual-book {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.idoc-virtual-book-status {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: min(100%, 900px);
+  padding: 8px 12px;
+  border: 1px solid #655a4d;
+  border-radius: 6px;
+  background: rgba(31, 27, 23, 0.96);
+  color: #e9dcc8;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.idoc-virtual-page-list {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.idoc-virtual-page-frame {
+  width: min(100%, 900px);
+  margin: 0;
+  content-visibility: auto;
+  contain: layout paint style;
+  contain-intrinsic-size: auto 1200px;
+}
+
+.idoc-virtual-page-surface {
+  width: 100%;
+  aspect-ratio: var(--idoc-page-aspect, 3 / 4);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid #51483e;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.025), transparent 42%),
+    #11100e;
+  box-shadow: 0 5px 22px rgba(0, 0, 0, 0.55);
+}
+
+.idoc-virtual-page-surface.is-error {
+  border-color: #a95b52;
+  background: #34201d;
+}
+
+.idoc-virtual-page-placeholder {
+  max-width: min(80%, 420px);
+  padding: 12px 16px;
+  color: #cfc3b3;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.idoc-virtual-page-surface.is-rendering .idoc-virtual-page-placeholder {
+  color: #f2dfb5;
+}
+
+.idoc-virtual-page-surface.is-error .idoc-virtual-page-placeholder {
+  color: #ffe9e5;
+}
+
+.idoc-virtual-page-canvas,
+.idoc-virtual-page-surface > .idoc-live-page,
+.idoc-virtual-page-surface > .idoc-rendered-preview {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  object-fit: contain;
+  box-shadow: none;
+}
+
+.idoc-preview-page-list > .idoc-virtual-book {
+  width: 100%;
+}
+
+.idoc-preview-page-list .idoc-virtual-page-frame {
+  width: min(100%, 760px);
+}
+
+@media (max-width: 560px) {
+  .idoc-virtual-page-list {
+    gap: 16px;
+  }
+
+  .idoc-virtual-book-status {
+    position: static;
+  }
+}
+
+/* Journal chapter structure controls */
+.idoc-journal-structure-option {
+  padding: 10px 12px;
+  border: 1px solid #75654d;
+  border-radius: 7px;
+  background: #211d18;
+}
+
+.idoc-journal-structure-option > label,
+.idoc-editor-chapter-mode {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #fff4df;
+  cursor: pointer;
+}
+
+.idoc-journal-structure-option input,
+.idoc-editor-chapter-mode input {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.idoc-journal-structure-option span,
+.idoc-editor-chapter-mode span {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.idoc-journal-structure-option small,
+.idoc-editor-chapter-mode small {
+  color: #d0c4b5;
+  line-height: 1.4;
+}

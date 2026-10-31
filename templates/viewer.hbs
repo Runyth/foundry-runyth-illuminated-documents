@@ -1,0 +1,15 @@
+<div class="idoc-shell idoc-dedicated-viewer">
+  <header class="idoc-viewer-toolbar">
+    <div class="idoc-viewer-title">
+      <strong>{{journalName}}</strong>
+      <small>Revision {{revision}} · {{sourceLength}} characters</small>
+    </div>
+    <div class="idoc-viewer-actions">
+      {{#if canShowPlayers}}<button type="button" data-action="show-players" title="Hold Shift to force-show regardless of permissions"><i class="fa-solid fa-eye"></i> Show Players</button>{{/if}}
+      {{#if canExtend}}<button type="button" data-action="extend"><i class="fa-solid fa-plus"></i> Extend this book</button>{{/if}}
+      {{#if canEdit}}<button type="button" data-action="edit"><i class="fa-solid fa-pen-to-square"></i> Edit book</button>{{/if}}
+      <button type="button" data-action="open-foundry"><i class="fa-solid fa-book-journal-whills"></i> Foundry Journal</button>
+    </div>
+  </header>
+  <main class="idoc-viewer-pages" data-viewer-pages></main>
+</div>

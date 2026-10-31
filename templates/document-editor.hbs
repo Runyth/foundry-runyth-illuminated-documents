@@ -1,0 +1,173 @@
+<div class="idoc-shell idoc-document-editor">
+  <header class="idoc-editor-header">
+    <div class="idoc-editor-heading">
+      <div class="idoc-editor-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+      <div>
+        <h2>{{journalName}}</h2>
+        <p>Revision {{revision}} · {{entryCount}} content section{{#unless (eq entryCount 1)}}s{{/unless}} · {{sourceLength}} characters</p>
+      </div>
+    </div>
+    <button type="button" data-action="reload" title="Discard unsaved changes and reload the saved revision">
+      <i class="fa-solid fa-rotate"></i>
+      Reload saved version
+    </button>
+  </header>
+
+  <div class="idoc-editor-layout">
+    <aside class="idoc-editor-settings">
+      <section class="idoc-editor-panel">
+        <h3><i class="fa-solid fa-book-open"></i> Book appearance</h3>
+        <label>
+          Book preset
+          <select name="presetId">
+            {{#each presets}}
+              <option value="{{id}}" {{#if (eq id ../presetId)}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </select>
+        </label>
+        <div class="idoc-editor-preset-summary">
+          <strong>{{activePreset.name}}</strong>
+          <small>Changing the preset keeps every content section and re-renders the same text on different backgrounds.</small>
+        </div>
+        <label class="idoc-editor-check">
+          <input type="checkbox" name="includeFrontCover" {{#if includeFrontCover}}checked{{/if}} {{#unless activePreset.frontCoverTemplateId}}disabled{{/unless}}>
+          Include front cover
+        </label>
+        <label class="idoc-editor-check">
+          <input type="checkbox" name="includeBackCover" {{#if includeBackCover}}checked{{/if}} {{#unless activePreset.backCoverTemplateId}}disabled{{/unless}}>
+          Include back cover
+        </label>
+      </section>
+
+      <section class="idoc-editor-panel">
+        <h3><i class="fa-solid fa-list"></i> {{localize "ILLUMINATED.Editor.JournalStructureTitle"}}</h3>
+        <label class="idoc-editor-check idoc-editor-chapter-mode">
+          <input type="checkbox" name="sectionsAsChapters" {{#if sectionsAsChapters}}checked{{/if}}>
+          <span>
+            <strong>{{localize "ILLUMINATED.Editor.SectionsAsChapters"}}</strong>
+            <small>{{localize "ILLUMINATED.Editor.SectionsAsChaptersHint"}}</small>
+          </span>
+        </label>
+      </section>
+
+      <section class="idoc-editor-panel">
+        <h3><i class="fa-solid fa-file-circle-plus"></i> {{localize "ILLUMINATED.Editor.PageFlowTitle"}}</h3>
+        <p class="idoc-help">{{localize "ILLUMINATED.Editor.PageFlowHint"}}</p>
+        <div class="idoc-editor-page-flow-actions">
+          <button
+            type="button"
+            data-action="start-all-new-pages"
+            {{#if allSectionsStartOnNewPage}}disabled{{/if}}
+          >
+            <i class="fa-solid fa-forward-step"></i>
+            {{localize "ILLUMINATED.Editor.StartAllSectionsNewPage"}}
+          </button>
+        </div>
+      </section>
+
+      {{#if hasDocumentExtensions}}
+        <section class="idoc-editor-panel idoc-extension-contributions">
+          <h3><i class="fa-solid fa-puzzle-piece"></i> Extension metadata</h3>
+          {{> "modules/runyth-illuminated-documents/templates/extension-fields.hbs" groups=documentExtensionGroups}}
+        </section>
+      {{/if}}
+
+      <section class="idoc-editor-panel">
+        <h3><i class="fa-solid fa-circle-info"></i> Saved document</h3>
+        <dl class="idoc-editor-facts">
+          <div><dt>Last saved</dt><dd>{{updatedAtLabel}}</dd></div>
+          <div><dt>Current revision</dt><dd>{{revision}}</dd></div>
+          <div><dt>Content sections</dt><dd>{{entryCount}}</dd></div>
+        </dl>
+        <p class="idoc-help">Saving updates this same Journal. Its ID, links, folder, ownership, and name remain unchanged.</p>
+      </section>
+
+      {{#if migrationNotice}}
+        <section class="idoc-editor-panel idoc-editor-migration">
+          <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Older-book migration</h3>
+          <p>{{migrationNotice}}</p>
+        </section>
+      {{/if}}
+    </aside>
+
+    <main class="idoc-entry-editor">
+      <header class="idoc-entry-editor-header">
+        <div>
+          <h3>Content sections</h3>
+          <p>Edit, remove, or reorder the original input and every appended input.</p>
+        </div>
+        <button type="button" data-action="add-entry">
+          <i class="fa-solid fa-plus"></i>
+          Add section
+        </button>
+      </header>
+
+      <div class="idoc-entry-list" data-entry-list>
+        {{#each entries}}
+          <article class="idoc-entry-card" data-entry-card data-entry-id="{{id}}">
+            <header class="idoc-entry-card-header">
+              <button type="button" class="idoc-entry-drag" draggable="true" data-drag-entry data-entry-id="{{id}}" title="Drag to reorder" aria-label="Drag section to reorder">
+                <i class="fa-solid fa-grip-vertical"></i>
+              </button>
+              <span class="idoc-entry-number">{{position}}</span>
+              <div class="idoc-entry-title-wrap">
+                <input data-entry-label value="{{label}}" aria-label="Content section label">
+                <small>{{kindLabel}} · {{authorLabel}} · {{createdAtLabel}}</small>
+              </div>
+              <div class="idoc-entry-actions">
+                <button type="button" data-action="move-up" data-entry-id="{{id}}" title="Move up" aria-label="Move section up" {{#unless canMoveUp}}disabled{{/unless}}><i class="fa-solid fa-arrow-up"></i></button>
+                <button type="button" data-action="move-down" data-entry-id="{{id}}" title="Move down" aria-label="Move section down" {{#unless canMoveDown}}disabled{{/unless}}><i class="fa-solid fa-arrow-down"></i></button>
+                <button type="button" data-action="delete-entry" data-entry-id="{{id}}" title="Remove section" aria-label="Remove section" {{#unless canDelete}}disabled{{/unless}}><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </header>
+            <textarea data-entry-text placeholder="Write Markdown for this section.">{{text}}</textarea>
+            {{#if canSetPageBreak}}
+              <label class="idoc-entry-page-flow">
+                <input type="checkbox" data-entry-page-break {{#if startOnNewPage}}checked{{/if}}>
+                <span>
+                  <strong>{{localize "ILLUMINATED.Editor.StartSectionNewPage"}}</strong>
+                  <small>{{localize "ILLUMINATED.Editor.StartSectionNewPageHint"}}</small>
+                </span>
+              </label>
+            {{/if}}
+            {{#if hasExtensionGroups}}
+              <details class="idoc-block-extension-details">
+                <summary><i class="fa-solid fa-puzzle-piece"></i> Section metadata</summary>
+                {{> "modules/runyth-illuminated-documents/templates/extension-fields.hbs" groups=extensionGroups}}
+              </details>
+            {{/if}}
+          </article>
+        {{/each}}
+      </div>
+
+      <footer class="idoc-editor-actions">
+        <button type="button" data-action="preview">
+          <i class="fa-solid fa-eye"></i>
+          Preview edited book
+        </button>
+        <button type="button" data-action="save">
+          <i class="fa-solid fa-floppy-disk"></i>
+          Save book changes
+        </button>
+      </footer>
+    </main>
+
+    <section class="idoc-editor-preview">
+      {{#if hasPreview}}
+        <header class="idoc-preview-header">
+          <div>
+            <strong>{{previewCount}} logical page{{#unless (eq previewCount 1)}}s{{/unless}}</strong>
+            <small>{{previewDescription}}</small>
+          </div>
+          <small>{{localize "ILLUMINATED.Virtual.PreviewHint"}}</small>
+        </header>
+        <div class="idoc-preview-page-list" data-virtual-preview></div>
+      {{else}}
+        <div class="idoc-empty-preview">
+          <i class="fa-solid fa-book-open-reader"></i>
+          <p>Preview the complete book after editing its sections or appearance.</p>
+        </div>
+      {{/if}}
+    </section>
+  </div>
+</div>

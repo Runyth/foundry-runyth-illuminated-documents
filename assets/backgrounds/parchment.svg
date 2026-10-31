@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+  <defs>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="4" seed="8"/>
+      <feColorMatrix values="0 0 0 0 0.36 0 0 0 0 0.24 0 0 0 0 0.10 0 0 0 .18 0"/>
+    </filter>
+    <radialGradient id="paper" cx="50%" cy="44%" r="72%">
+      <stop offset="0" stop-color="#f3dfad"/>
+      <stop offset="0.72" stop-color="#d7b878"/>
+      <stop offset="1" stop-color="#7a4d26"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1600" fill="#3b2618"/>
+  <path d="M62 38 C180 22 285 55 395 36 C520 14 630 55 760 32 C885 12 1028 48 1145 35 L1168 145 C1140 270 1175 370 1147 490 C1178 610 1138 735 1164 850 C1140 980 1174 1090 1146 1225 C1174 1340 1136 1458 1149 1562 C1020 1540 900 1575 780 1547 C655 1570 530 1538 405 1560 C290 1535 180 1570 57 1548 C73 1430 35 1320 63 1195 C37 1080 72 960 44 840 C75 720 40 605 64 480 C35 360 75 245 52 140 Z" fill="url(#paper)"/>
+  <rect x="62" y="38" width="1086" height="1524" filter="url(#noise)" opacity="0.55"/>
+</svg>

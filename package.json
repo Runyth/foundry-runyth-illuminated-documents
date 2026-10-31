@@ -1,0 +1,20 @@
+{
+  "name": "runyth-illuminated-documents",
+  "version": "1.12.1",
+  "private": true,
+  "type": "module",
+  "description": "Source repository and deterministic packaging for the Illuminated Documents Foundry VTT module.",
+  "scripts": {
+    "clean": "node -e \"Promise.all(['build','dist'].map(async (name) => { const fs = await import('node:fs/promises'); await fs.rm(name, { recursive: true, force: true }); await fs.mkdir(name); await fs.writeFile(name + '/.gitkeep', ''); }))\"",
+    "format:check": "node tools/format-check.mjs",
+    "lint": "node tools/lint.mjs",
+    "validate": "node tools/validate.mjs",
+    "test": "node tools/test.mjs",
+    "build": "npm run validate && node tools/build.mjs",
+    "package": "npm run build && node tools/package.mjs && node tools/verify-package.mjs",
+    "release:check": "npm run format:check && npm run lint && npm test && npm run package"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

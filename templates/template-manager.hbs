@@ -1,0 +1,71 @@
+<div class="idoc-shell idoc-template-manager">
+  <aside class="idoc-sidebar">
+    <div class="idoc-toolbar">
+      <button type="button" data-action="new-template" title="New template" aria-label="New visual template"><i class="fa-solid fa-plus"></i></button>
+      <button type="button" data-action="duplicate-template" title="Duplicate" aria-label="Duplicate visual template" {{#unless active}}disabled{{/unless}}><i class="fa-solid fa-copy"></i></button>
+      <button type="button" data-action="delete-template" title="Delete" aria-label="Delete visual template" {{#unless active}}disabled{{/unless}}><i class="fa-solid fa-trash"></i></button>
+    </div>
+    <nav class="idoc-template-list">
+      {{#each templates}}
+      <button type="button" data-action="select-template" data-template-id="{{id}}" class="{{#if (eq id ../active.id)}}active{{/if}}">
+        <strong>{{name}}</strong><small>{{#if (eq accessMode "gm-only")}}GM only{{else}}Shared{{/if}} · {{id}}</small>
+      </button>
+      {{/each}}
+    </nav>
+  </aside>
+
+  {{#if active}}
+  <main class="idoc-manager-content">
+    <section class="idoc-preview-panel">
+      <div class="idoc-preview-stage" style="aspect-ratio: {{active.width}} / {{active.height}}; background-image: url('{{active.background}}');">
+        {{#with (lookup active.regions selectedRegion)}}
+        <div class="idoc-region-overlay" style="left: {{x}}%; top: {{y}}%; width: {{width}}%; height: {{height}}%;">
+          <span class="idoc-region-handle idoc-region-handle-nw" data-handle="nw"></span><span class="idoc-region-handle idoc-region-handle-n" data-handle="n"></span><span class="idoc-region-handle idoc-region-handle-ne" data-handle="ne"></span><span class="idoc-region-handle idoc-region-handle-e" data-handle="e"></span><span class="idoc-region-handle idoc-region-handle-se" data-handle="se"></span><span class="idoc-region-handle idoc-region-handle-s" data-handle="s"></span><span class="idoc-region-handle idoc-region-handle-sw" data-handle="sw"></span><span class="idoc-region-handle idoc-region-handle-w" data-handle="w"></span>
+        </div>
+        {{/with}}
+      </div>
+      <p class="notes">Drag inside the selected region to move it. Drag a border handle to resize it. Drag on empty image space to draw a replacement region. Coordinates are stored as percentages.</p>
+    </section>
+
+    <section class="idoc-fields">
+      <div class="form-group"><label>Name</label><input name="template.name" value="{{active.name}}"></div>
+      <div class="form-group"><label>Background image</label><div class="form-fields"><input name="template.background" value="{{active.background}}"><button type="button" data-action="pick-background" title="Choose background image" aria-label="Choose background image"><i class="fa-solid fa-folder-open"></i></button></div></div>
+      <div class="idoc-dimension-notice"><i class="fa-solid fa-expand"></i><div><strong>The background should ideally match the output dimensions exactly.</strong><br><small>Foundry renders at the configured size. A different source size or aspect ratio is scaled and can visibly distort the artwork.</small></div></div>
+      <div class="idoc-grid-2"><div class="form-group"><label>Output width / ideal image width</label><input type="number" name="template.width" value="{{active.width}}" min="320"></div><div class="form-group"><label>Output height / ideal image height</label><input type="number" name="template.height" value="{{active.height}}" min="320"></div></div>
+      <div class="form-group"><label>Output directory</label><input name="template.outputDirectory" value="{{active.outputDirectory}}"></div>
+
+      <hr>
+      <div class="idoc-section-heading"><strong>Text regions</strong><div><button type="button" data-action="add-region" title="Add text region" aria-label="Add text region"><i class="fa-solid fa-plus"></i></button><button type="button" data-action="remove-region" title="Remove selected text region" aria-label="Remove selected text region"><i class="fa-solid fa-minus"></i></button></div></div>
+      <select data-action="select-region">{{#each active.regions}}<option value="{{@index}}" {{#if (eq @index ../selectedRegion)}}selected{{/if}}>{{label}} ({{id}})</option>{{/each}}</select>
+
+      {{#with (lookup active.regions selectedRegion)}}
+      <div class="form-group"><label>Region label</label><input name="region.label" value="{{label}}"></div>
+      <div class="idoc-grid-4"><label>X %<input type="number" name="region.x" value="{{x}}" step="0.1"></label><label>Y %<input type="number" name="region.y" value="{{y}}" step="0.1"></label><label>Width %<input type="number" name="region.width" value="{{width}}" step="0.1"></label><label>Height %<input type="number" name="region.height" value="{{height}}" step="0.1"></label></div>
+      <div class="idoc-grid-3"><label>Font size<input type="number" name="region.fontSize" value="{{fontSize}}"></label><label>Minimum<input type="number" name="region.minFontSize" value="{{minFontSize}}"></label><label>Line height<input type="number" name="region.lineHeight" value="{{lineHeight}}" step="0.05"></label></div>
+      <div class="form-group"><label>Font family</label><input name="region.fontFamily" value="{{fontFamily}}"></div>
+      <div class="form-group"><label>Optional font file</label><div class="form-fields"><input name="region.fontFile" value="{{fontFile}}"><button type="button" data-action="pick-font" title="Choose font file" aria-label="Choose font file"><i class="fa-solid fa-folder-open"></i></button></div></div>
+      <div class="idoc-grid-3"><label>Text colour<input type="color" name="region.color" value="{{color}}"></label><label>Alignment<select name="region.align"><option value="left" {{#if (eq align "left")}}selected{{/if}}>Left</option><option value="center" {{#if (eq align "center")}}selected{{/if}}>Centre</option><option value="right" {{#if (eq align "right")}}selected{{/if}}>Right</option><option value="justify" {{#if (eq align "justify")}}selected{{/if}}>Justify</option></select></label><label>Vertical<select name="region.verticalAlign"><option value="top" {{#if (eq verticalAlign "top")}}selected{{/if}}>Top</option><option value="middle" {{#if (eq verticalAlign "middle")}}selected{{/if}}>Middle</option><option value="bottom" {{#if (eq verticalAlign "bottom")}}selected{{/if}}>Bottom</option></select></label></div>
+      {{/with}}
+
+      <section class="idoc-resource-access-section idoc-template-access-section">
+        <h3>Template availability</h3>
+        {{#if isGM}}
+          <p class="idoc-help">Selected players may use this template when composing a shared preset. They may edit it only when they also have the global <strong>Manage templates</strong> capability.</p>
+          <div class="idoc-access-mode-options">
+            <label><input type="radio" name="accessMode" value="gm-only" {{#if isGmOnly}}checked{{/if}}> <span><i class="fa-solid fa-lock"></i><strong>GM only</strong><small>Only Game Masters may directly use or manage this template.</small></span></label>
+            <label><input type="radio" name="accessMode" value="selected-users" {{#if isSelectedUsers}}checked{{/if}}> <span><i class="fa-solid fa-user-group"></i><strong>Selected players</strong><small>Share direct access with specific players.</small></span></label>
+          </div>
+          <div class="idoc-resource-user-grid {{#unless isSelectedUsers}}is-disabled{{/unless}}">{{#each accessUsers}}<label><input type="checkbox" name="allowedUserIds" value="{{id}}" {{#if checked}}checked{{/if}}><span>{{name}}{{#if active}} <small>Online</small>{{/if}}</span></label>{{/each}}</div>
+        {{else}}
+          <div class="idoc-managed-resource-notice"><i class="fa-solid fa-user-check"></i><div><strong>This visual template is shared with you.</strong><p>You may edit its image, regions, and typography. Only a Game Master can change sharing.</p></div></div>
+        {{/if}}
+      </section>
+
+      <details><summary>Advanced JSON</summary><textarea name="templateJson" rows="12">{{activeJson}}</textarea><button type="button" data-action="apply-json">Apply JSON</button></details>
+      <footer class="sheet-footer"><button type="button" data-action="save"><i class="fa-solid fa-floppy-disk"></i> Save templates</button></footer>
+    </section>
+  </main>
+  {{else}}
+  <main class="idoc-manager-content idoc-no-managed-resources"><i class="fa-solid fa-layer-group"></i><h3>No shared visual templates</h3><p>Create a new template, or ask a Game Master to share an existing template with your account.</p><button type="button" data-action="new-template"><i class="fa-solid fa-plus"></i>Create visual template</button></main>
+  {{/if}}
+</div>

@@ -1,4 +1,4 @@
-# Illuminated Documents
+# Runyth Illuminated Documents
 
 Illuminated Documents creates reusable, visually rendered books, scrolls, letters, journals, and other in-world handouts for Foundry VTT v13.
 

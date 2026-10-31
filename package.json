@@ -15,6 +15,7 @@
     "release:check": "npm run format:check && npm run lint && npm test && npm run package"
   },
   "engines": {
-    "node": ">=22"
-  }
+    "node": ">=22.13.0 <27"
+  },
+  "license": "AGPL-3.0-or-later"
 }

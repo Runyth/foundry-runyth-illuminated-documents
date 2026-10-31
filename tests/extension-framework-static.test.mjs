@@ -26,7 +26,7 @@ const management = await readFile(path.join(root, "templates/document-management
 const docs = await readFile(path.join(root, "docs/EXTENSION_API.md"), "utf8");
 const manifest = JSON.parse(await readFile(path.join(root, "module.json"), "utf8"));
 
-assert.equal(manifest.version, "1.12.1");
+assert.equal(manifest.version, "1.12.2");
 assert.match(main, /game\.illuminatedDocuments\s*=\s*publicNamespace/);
 assert.match(constants, /EXTENSION_API_VERSION\s*=\s*"1\.0\.0"/);
 for (const hook of [

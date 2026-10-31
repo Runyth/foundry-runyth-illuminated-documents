@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.2
+
+- Adopted the Runyth brand in the displayed module title.
+- Declared the `AGPL-3.0-or-later` licence and the tested Node `>=22.13.0 <27` range in package metadata.
+- Preserved all behaviour, storage, and extension contracts; this patch changes branding and metadata only and requires no content migration.
+
 ## 1.12.1
 
 - Licensed the program under AGPL-3.0-or-later.

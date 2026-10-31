@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const moduleManifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
-assert.equal(moduleManifest.version, "1.12.1");
+assert.equal(moduleManifest.version, "1.12.2");
 assert.equal(moduleManifest.socket, true, "The module socket namespace must be enabled for player-to-GM requests.");
 
 const mainSource = await readFile(new URL("../scripts/main.js", import.meta.url), "utf8");

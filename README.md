@@ -434,9 +434,9 @@ npm run package
 `npm run package` creates byte-reproducible archives with fixed ZIP timestamps and sorted entries:
 
 ```text
-dist/runyth-illuminated-documents-v1.12.1-mod.zip
-dist/runyth-illuminated-documents-v1.12.1-src.zip
-dist/runyth-illuminated-documents-v1.12.1-doc.zip
+dist/runyth-illuminated-documents-v1.12.2-mod.zip
+dist/runyth-illuminated-documents-v1.12.2-src.zip
+dist/runyth-illuminated-documents-v1.12.2-doc.zip
 ```
 
 The installable archive contains only:

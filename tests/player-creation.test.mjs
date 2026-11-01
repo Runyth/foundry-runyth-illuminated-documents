@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const moduleManifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
-assert.equal(moduleManifest.version, "1.12.2");
+assert.equal(moduleManifest.version, "1.12.3");
 assert.equal(moduleManifest.socket, true, "The module socket namespace must be enabled for player-to-GM requests.");
 
 const mainSource = await readFile(new URL("../scripts/main.js", import.meta.url), "utf8");

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.3 - 2026-11-01
+
+### Fixed
+
+- Attributed the source licence headers to the same holder the README Licence chapter names and renamed neutral test player fixtures.
+
 ## 1.12.2
 
 - Adopted the Runyth brand in the displayed module title.

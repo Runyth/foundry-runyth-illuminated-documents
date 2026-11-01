@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { registerSettings, getTemplates, saveTemplates, MODULE_ID } from "./settings.js";
 import { DocumentManagement } from "./document-management.js";
 import { TemplateManager } from "./template-manager.js";

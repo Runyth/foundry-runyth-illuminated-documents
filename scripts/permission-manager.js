@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { IlluminatedApplicationV2, setApplicationBusy } from "./application-v2.js";
 import { getPresets } from "./presets.js";
 import { getTemplates } from "./settings.js";

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 
 let uuidCounter = 0;
@@ -25,22 +25,22 @@ let metadata = createLiveMetadata({
   includeFrontCover: true,
   includeBackCover: true,
   ownerId: "user-1",
-  ownerName: "Akito",
+  ownerName: "Player",
   now: 1000
 });
 metadata = buildExtendedMetadata(metadata, "# Session Two\n\nThe sawmill investigation.", {
   userId: "user-1",
-  userName: "Akito",
+  userName: "Player",
   now: 2000
 });
 metadata = buildExtendedMetadata(metadata, "# Session Three\n\nThe hidden ledger.", {
   userId: "user-1",
-  userName: "Akito",
+  userName: "Player",
   now: 3000
 });
 metadata = buildExtendedMetadata(metadata, "# Session Four\n\nReturn to Velia.", {
   userId: "user-1",
-  userName: "Akito",
+  userName: "Player",
   now: 4000
 });
 
@@ -62,7 +62,7 @@ const edited = buildEditedMetadata(metadata, {
   includeBackCover: false
 }, {
   userId: "user-1",
-  userName: "Akito",
+  userName: "Player",
   now: 5000
 });
 
@@ -91,17 +91,17 @@ const legacy = {
   sourceText: `${legacyInitial}\n\n${legacyAppendOne}\n\n${legacyAppendTwo}`,
   createdAt: 100,
   updatedAt: 300,
-  createdBy: { userId: "user-1", userName: "Akito" },
+  createdBy: { userId: "user-1", userName: "Player" },
   extensionHistory: [
-    { id: "append-1", userId: "user-1", userName: "Akito", appendedAt: 200, characterCount: legacyAppendOne.length },
-    { id: "append-2", userId: "user-1", userName: "Akito", appendedAt: 300, characterCount: legacyAppendTwo.length }
+    { id: "append-1", userId: "user-1", userName: "Player", appendedAt: 200, characterCount: legacyAppendOne.length },
+    { id: "append-2", userId: "user-1", userName: "Player", appendedAt: 300, characterCount: legacyAppendTwo.length }
   ]
 };
 const reconstructed = getContentEntries(legacy);
 assert.equal(reconstructed.migrationMode, "reconstructed");
 assert.deepEqual(reconstructed.entries.map((entry) => entry.text), [legacyInitial, legacyAppendOne, legacyAppendTwo]);
 
-const requester = { id: "user-1", name: "Akito", isGM: false };
+const requester = { id: "user-1", name: "Player", isGM: false };
 const journalUpdates = [];
 const pageUpdates = [];
 const page = { id: "page-1", type: "text", getFlag: () => metadata };

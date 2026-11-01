@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 
 const {
@@ -23,7 +23,7 @@ assert.equal(
     globalPrefix: "Archive / ",
     globalSuffix: " [GM]",
     globalFormat: DEFAULT_NAME_FORMAT,
-    userName: "Akito",
+    userName: "Player",
     now
   }),
   "Archive / Book — The Road North — Vol. I [GM]"
@@ -35,10 +35,10 @@ assert.equal(
     preset: { ...preset, nameFormat: "{date} · {preset} · {title} · {user}" },
     globalPrefix: "Ignored",
     globalSuffix: "Ignored",
-    userName: "Akito",
+    userName: "Player",
     now
   }),
-  "2026-07-24 · Open Chronicle · Session 12 · Akito"
+  "2026-07-24 · Open Chronicle · Session 12 · Player"
 );
 
 assert.equal(renderNameFormat("{title}   {date}", { title: "Log", date: "2026-07-24" }), "Log 2026-07-24");

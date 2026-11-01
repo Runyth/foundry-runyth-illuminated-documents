@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 
 globalThis.foundry = undefined;
@@ -23,13 +23,13 @@ const original = createLiveMetadata({
   includeFrontCover: true,
   includeBackCover: true,
   ownerId: "user-1",
-  ownerName: "Akito",
+  ownerName: "Player",
   now: 1000
 });
 
 const extended = buildExtendedMetadata(original, "# Session Two\n\nThe party returned.", {
   userId: "user-1",
-  userName: "Akito",
+  userName: "Player",
   startOnNewPage: true,
   now: 2000
 });
@@ -53,7 +53,7 @@ assert.throws(
   /Enter additional text/
 );
 
-const requester = { id: "user-1", name: "Akito", isGM: false };
+const requester = { id: "user-1", name: "Player", isGM: false };
 const journalUpdates = [];
 const pageUpdates = [];
 const page = {

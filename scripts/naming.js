@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 export const DEFAULT_NAME_FORMAT = "{globalPrefix}{presetPrefix}{title}{presetSuffix}{globalSuffix}";
 
 export const NAME_FORMAT_TOKENS = Object.freeze([

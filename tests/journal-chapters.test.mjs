@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
@@ -31,7 +31,7 @@ let metadata = createLiveMetadata({
   text: "The party reaches Velia.",
   presetId: "open-book",
   ownerId: "user-1",
-  ownerName: "Akito",
+  ownerName: "Player",
   initialBlockId: "section-prologue",
   initialBlockLabel: "Prologue",
   sectionsAsChapters: true,
@@ -41,14 +41,14 @@ metadata = buildExtendedMetadata(metadata, "The road south becomes dangerous.", 
   blockId: "section-road",
   label: "The Road South",
   userId: "user-1",
-  userName: "Akito",
+  userName: "Player",
   now: 2000
 });
 metadata = buildExtendedMetadata(metadata, "A hidden ledger is recovered.", {
   blockId: "section-ledger",
   label: "The Hidden Ledger",
   userId: "user-1",
-  userName: "Akito",
+  userName: "Player",
   now: 3000
 });
 
@@ -142,7 +142,7 @@ const edited = buildEditedMetadata(metadata, {
   includeFrontCover: metadata.includeFrontCover,
   includeBackCover: metadata.includeBackCover,
   sectionsAsChapters: true
-}, { userId: "user-1", userName: "Akito", now: 4000, documentUuid: journal.uuid });
+}, { userId: "user-1", userName: "Player", now: 4000, documentUuid: journal.uuid });
 
 await syncJournalPagesForMetadata(journal, edited);
 assert.deepEqual(managed().sort((a, b) => a.sort - b.sort).map((page) => page.name), ["Road to Heidel", "Opening"]);
@@ -157,7 +157,7 @@ const collapsed = buildEditedMetadata(edited, {
   includeFrontCover: edited.includeFrontCover,
   includeBackCover: edited.includeBackCover,
   sectionsAsChapters: false
-}, { userId: "user-1", userName: "Akito", now: 5000, documentUuid: journal.uuid });
+}, { userId: "user-1", userName: "Player", now: 5000, documentUuid: journal.uuid });
 assert.equal(collapsed.editHistory.at(-1).chapterModeChanged, true);
 await syncJournalPagesForMetadata(journal, collapsed);
 assert.equal(managed().length, 0);

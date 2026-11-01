@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 import { ExtensionRegistry } from "../scripts/extensions/registry.js";
 import { ExtensionSafeExecutor } from "../scripts/extensions/safe-executor.js";

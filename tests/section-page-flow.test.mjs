@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
@@ -19,7 +19,7 @@ assert.equal(legacy.entries[0].startOnNewPage, false, "older documents must pres
 const prepared = prepareEditedEntries(
   [{ ...entry, startOnNewPage: false }],
   [entry],
-  { userId: "user-1", userName: "Akito", now: 2000 }
+  { userId: "user-1", userName: "Player", now: 2000 }
 );
 assert.equal(prepared[0].startOnNewPage, false);
 assert.equal(prepared[0].updatedAt, 2000, "changing page flow must count as an edit");
@@ -36,7 +36,7 @@ const onlyPageFlowChanged = buildEditedMetadata(live, {
   presetId: live.presetId,
   includeFrontCover: false,
   includeBackCover: false
-}, { userId: "user-1", userName: "Akito", now: 3000 });
+}, { userId: "user-1", userName: "Player", now: 3000 });
 assert.equal(onlyPageFlowChanged.contentEntries[0].startOnNewPage, true);
 assert.equal(onlyPageFlowChanged.editHistory.at(-1).pageFlowChanged, true);
 

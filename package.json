@@ -1,6 +1,6 @@
 {
   "name": "runyth-illuminated-documents",
-  "version": "1.12.2",
+  "version": "1.12.3",
   "private": true,
   "type": "module",
   "description": "Source repository and deterministic packaging for the Illuminated Documents Foundry VTT module.",

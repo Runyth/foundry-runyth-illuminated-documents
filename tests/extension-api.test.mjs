@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 
 let metadata = {
@@ -41,7 +41,7 @@ globalThis.Hooks = { callAll: () => {} };
 globalThis.game = {
   user: { id: "player", isGM: false },
   journal: new Map([[journal.id, journal]]),
-  modules: new Map([["runyth-illuminated-documents", { version: "1.12.2" }]])
+  modules: new Map([["runyth-illuminated-documents", { version: "1.12.3" }]])
 };
 globalThis.fromUuidSync = (uuid) => uuid === journal.uuid ? journal : null;
 

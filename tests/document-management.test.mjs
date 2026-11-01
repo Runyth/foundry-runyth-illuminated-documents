@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 
 const settings = new Map([
@@ -24,7 +24,7 @@ const settings = new Map([
   ["globalNameFormat", "{globalPrefix}{presetPrefix}{title}{presetSuffix}{globalSuffix}"]
 ]);
 
-const owner = { id: "user-1", name: "Akito", isGM: true };
+const owner = { id: "user-1", name: "Player", isGM: true };
 const folder = { id: "folder-1", name: "Chronicles", type: "JournalEntry", folder: null, flags: {} };
 const folders = new Map([[folder.id, folder]]);
 let createdData = null;

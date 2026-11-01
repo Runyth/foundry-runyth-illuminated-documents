@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { resolveBookDefinition } from "./book-definition.js";
 import { combineContentEntries, getContentEntries } from "./content-entries.js";
 import { saveLiveMetadataToJournal } from "./documents.js";

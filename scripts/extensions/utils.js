@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 const SAFE_IDENTIFIER = /^[a-z0-9][a-z0-9._-]{0,63}$/;
 const SAFE_FIELD_KEY = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 

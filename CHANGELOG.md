@@ -1,18 +1,16 @@
 # Changelog
 
-## 1.12.3 - 2026-11-01
-
-### Fixed
+## 1.12.3 — 2026-11-01
 
 - Attributed the source licence headers to the same holder the README Licence chapter names and renamed neutral test player fixtures.
 
-## 1.12.2
+## 1.12.2 — 2026-11-01
 
 - Adopted the Runyth brand in the displayed module title.
 - Declared the `AGPL-3.0-or-later` licence and the tested Node `>=22.13.0 <27` range in package metadata.
 - Preserved all behaviour, storage, and extension contracts; this patch changes branding and metadata only and requires no content migration.
 
-## 1.12.1
+## 1.12.1 — 2026-10-31
 
 - Licensed the program under AGPL-3.0-or-later.
 - Aligned the unpublished module id with `runyth-illuminated-documents`.

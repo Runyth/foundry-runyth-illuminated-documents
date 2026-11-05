@@ -41,7 +41,7 @@ globalThis.Hooks = { callAll: () => {} };
 globalThis.game = {
   user: { id: "player", isGM: false },
   journal: new Map([[journal.id, journal]]),
-  modules: new Map([["runyth-illuminated-documents", { version: "1.12.3" }]])
+  modules: new Map([["runyth-illuminated-documents", { version: "1.12.4" }]])
 };
 globalThis.fromUuidSync = (uuid) => uuid === journal.uuid ? journal : null;
 

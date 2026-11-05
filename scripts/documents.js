@@ -29,6 +29,17 @@ import { EXTENSION_HOOKS } from "./extensions/constants.js";
 
 const HISTORY_LIMIT = 100;
 
+const LEGACY_FLAG_NAMESPACES = "illuminated-documents";
+
+function metadataLooksValid(metadata) {
+  return metadata.schemaVersion !== undefined
+    || metadata.sourceText !== undefined
+    || metadata.contentEntries !== undefined
+    || metadata.extensionHistory !== undefined
+    || metadata.templateId !== undefined
+    || metadata.presetId !== undefined;
+}
+
 export function liveDocumentContent({ blockId = "" } = {}) {
   const chapterAttribute = blockId ? ` data-idoc-chapter-block-id="${String(blockId).replaceAll('"', "&quot;")}"` : "";
   return `
@@ -42,20 +53,50 @@ export function liveDocumentContent({ blockId = "" } = {}) {
 }
 
 export function getLiveMetadata(document) {
-  return document?.getFlag?.(MODULE_ID, "liveDocument")
-    || document?.flags?.[MODULE_ID]?.liveDocument
-    || null;
+  const direct = readNamespaceFlag(document, id => document?.getFlag?.(id, "liveDocument")
+    ?? document?.flags?.[id]?.liveDocument ?? null);
+  if (direct) return direct;
+  return discoverLegacyFlag(document, metadataLooksValid, "liveDocument");
+}
+
+export function getSectionChapterBlockId(page) {
+  const direct = readNamespaceFlag(page, id => page?.getFlag?.(id, "sectionChapter")
+    ?? page?.flags?.[id]?.sectionChapter ?? null);
+  const record = direct ?? discoverLegacyFlag(page, value => value && typeof value === "object" && typeof value.blockId === "string", "sectionChapter");
+  return String(record?.blockId || "");
+}
+
+/**
+ * The pre-Runyth publication of this module shipped under other module ids, so
+ * long-lived worlds still store their document metadata under those legacy
+ * flag namespaces. The readers resolve the document's own stored record from
+ * any namespace carrying a marker shape, and the module's lazy metadata
+ * migration (prepareMetadata) then persists it under the current module id so
+ * the document is self-healing after the first open.
+ */
+function readNamespaceFlag(document, read) {
+  for (const id of [MODULE_ID, LEGACY_FLAG_NAMESPACES]) {
+    const value = read(id);
+    if (value) return value;
+  }
+  return null;
+}
+
+function discoverLegacyFlag(document, validate, key) {
+  const flags = document?.flags;
+  if (!flags || typeof flags !== "object") return null;
+  for (const [namespace, record] of Object.entries(flags)) {
+    if (!record || typeof record !== "object" || Array.isArray(record)) continue;
+    const value = record[key];
+    if (!value || typeof value !== "object" || Array.isArray(value)) continue;
+    if (namespace === MODULE_ID) continue;
+    if (validate(value)) return value;
+  }
+  return null;
 }
 
 export function usesSectionChapters(metadata) {
   return Boolean(metadata?.sectionsAsChapters);
-}
-
-export function getSectionChapterBlockId(page) {
-  const value = page?.getFlag?.(MODULE_ID, "sectionChapter")
-    || page?.flags?.[MODULE_ID]?.sectionChapter
-    || null;
-  return String(value?.blockId || "");
 }
 
 function journalPageSort(index) {

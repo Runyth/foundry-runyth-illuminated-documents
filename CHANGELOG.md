@@ -1,5 +1,22 @@
 # Changelog
 
+
+## 1.12.4 — 2026-11-05
+
+- Long-lived worlds that used Illuminated Documents before the Runyth brand
+  alignment stored their document metadata under the pre-Runyth module id, so
+  the readers under the current module id resolved nothing and every page of
+  such a document kept showing the live-render placeholder forever.
+- `getLiveMetadata` and `getSectionChapterBlockId` now read the document's own
+  flags through the current module id, the explicit pre-Runyth namespace, and
+  a shape-validated discovery over unknown legacy namespaces; unrelated
+  modules' flag shelves that carry the key names without the metadata shape
+  stay inert.
+- Opening such a document persists the first internally migrated record into
+  the current module namespace through the existing lazy metadata migration,
+  so the document self-heals on first open once a user who may update is
+  signed in.
+
 ## 1.12.3 — 2026-11-01
 
 - Attributed the source licence headers to the same holder the README Licence chapter names and renamed neutral test player fixtures.

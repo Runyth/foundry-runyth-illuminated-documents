@@ -182,4 +182,30 @@ for (const page of chapterPages) {
   assert.ok(stubPage.text.content.includes("Rendering illuminated document"), "the reported stuck surface is the standard live-document stub");
 }
 
+{
+  // getFlag is Foundry's platform API and throws for scopes that no longer
+  // correspond to an active package; the readers must not poke it for legacy
+  // scope names.
+  const throwingJournal = makeJournal({
+    id: "still-open",
+    flags: { "illuminated-documents": { liveDocument: structuredClone(legacyMetadata) } }
+  });
+  throwingJournal.getFlag = (scope) => {
+    if (scope === MODULE_ID) return throwingJournal.flags?.[scope]?.liveDocument ?? null;
+    throw new Error(`Flag scope "${String(scope)}" is not valid or not currently active`);
+  };
+  game.journal = { get: (id) => (id === "still-open" ? throwingJournal : null) };
+  const metadata = getJournalLiveMetadata(throwingJournal);
+  assert.ok(metadata, "legacy records resolve without calling getFlag on inactive scopes");
+  assert.equal(metadata.schemaVersion, 6);
+
+  const page = { flags: { "illuminated-documents": { sectionChapter: { blockId: "b-1" } } } };
+  page.getFlag = (scope) => {
+    if (scope === MODULE_ID) return page.flags?.[scope]?.sectionChapter ?? null;
+    throw new Error(`Flag scope "${String(scope)}" is not valid or not currently active`);
+  };
+  assert.equal(getSectionChapterBlockId(page), "b-1", "legacy chapter markers resolve without inactive getFlag");
+  game.journal = { get: (id) => (id === "legacy-journal" ? legacyJournal : null) };
+}
+
 console.log("legacy-flag-migration tests passed");

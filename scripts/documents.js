@@ -53,15 +53,20 @@ export function liveDocumentContent({ blockId = "" } = {}) {
 }
 
 export function getLiveMetadata(document) {
-  const direct = readNamespaceFlag(document, id => document?.getFlag?.(id, "liveDocument")
-    ?? document?.flags?.[id]?.liveDocument ?? null);
+  // The active module scope is the only safe getFlag target; Foundry throws
+  // for scopes that no longer correspond to an active package, so legacy
+  // namespaces are read through the raw flag shelf instead.
+  const direct = document?.getFlag?.(MODULE_ID, "liveDocument")
+    ?? metadataFlag(document, MODULE_ID, "liveDocument")
+    ?? metadataFlag(document, LEGACY_FLAG_NAMESPACES, "liveDocument");
   if (direct) return direct;
   return discoverLegacyFlag(document, metadataLooksValid, "liveDocument");
 }
 
 export function getSectionChapterBlockId(page) {
-  const direct = readNamespaceFlag(page, id => page?.getFlag?.(id, "sectionChapter")
-    ?? page?.flags?.[id]?.sectionChapter ?? null);
+  const direct = page?.getFlag?.(MODULE_ID, "sectionChapter")
+    ?? metadataFlag(page, MODULE_ID, "sectionChapter")
+    ?? metadataFlag(page, LEGACY_FLAG_NAMESPACES, "sectionChapter");
   const record = direct ?? discoverLegacyFlag(page, value => value && typeof value === "object" && typeof value.blockId === "string", "sectionChapter");
   return String(record?.blockId || "");
 }
@@ -74,12 +79,8 @@ export function getSectionChapterBlockId(page) {
  * migration (prepareMetadata) then persists it under the current module id so
  * the document is self-healing after the first open.
  */
-function readNamespaceFlag(document, read) {
-  for (const id of [MODULE_ID, LEGACY_FLAG_NAMESPACES]) {
-    const value = read(id);
-    if (value) return value;
-  }
-  return null;
+function metadataFlag(document, namespace, key) {
+  return document?.flags?.[namespace]?.[key] ?? null;
 }
 
 function discoverLegacyFlag(document, validate, key) {

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.12.5 — 2026-11-05
+
+- Foundry's `getFlag` API throws for flag scopes that no longer correspond to
+  an active package. The legacy-namespace readers introduced in 1.12.4 called
+  the platform reader with the pre-Runyth scope and crashed the journal
+  render hooks with "Flag scope … is not valid or not currently active"
+  instead of falling through.
+- The readers now use the platform reader only for the module's own scope and
+  resolve legacy and unknown-namespace records through the raw flag shelf;
+  the regression harness covers a throwing `getFlag` for every inactive
+  scope.
 
 ## 1.12.4 — 2026-11-05
 

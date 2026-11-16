@@ -8,3 +8,13 @@ build/*
 Thumbs.db
 .vscode/
 .idea/
+# --- Runyth template managed (begin) ---
+dist/
+coverage/
+.nyc_output/
+.cache/
+.runyth-template-source/
+.env
+.env.*
+!.env.example
+# --- Runyth template managed (end) ---

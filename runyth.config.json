@@ -1,0 +1,87 @@
+{
+  "build": {
+    "exclude": [
+      "**/*.map",
+      "**/*.ts",
+      "**/*.tsx",
+      "**/.DS_Store",
+      "**/Thumbs.db"
+    ],
+    "include": [
+      "module.json",
+      "README.md",
+      "CHANGELOG.md",
+      "LICENSE",
+      "scripts/**",
+      "styles/**",
+      "templates/**",
+      "lang/**",
+      "packs/**",
+      "assets/**",
+      "data/**",
+      "fonts/**",
+      "icons/**",
+      "media/**",
+      "sounds/**",
+      "ui/**",
+      "vendor/**"
+    ],
+    "preBuild": [],
+    "sourceExclude": [
+      ".git/**",
+      ".runyth-template-source/**",
+      "dist/**",
+      "node_modules/**",
+      "coverage/**",
+      ".nyc_output/**",
+      ".cache/**",
+      "*.log",
+      ".env",
+      ".env.*",
+      "**/.DS_Store",
+      "**/Thumbs.db",
+      "build/**"
+    ]
+  },
+  "module": {
+    "kind": "runtime",
+    "publicApi": true,
+    "repository": "Runyth/foundry-runyth-illuminated-documents",
+    "systemNeutral": true
+  },
+  "runtimeKit": {
+    "managed": false
+  },
+  "schemaVersion": 1,
+  "sync": {
+    "exclude": []
+  },
+  "template": {
+    "repository": "Runyth/template-foundry-module",
+    "source": false,
+    "version": "1.1.5"
+  },
+  "validation": {
+    "allowFindings": [
+      {
+        "path": "scripts/viewer.js",
+        "reason": "Audited 2026-11-16: line 172 is a static error banner with no interpolation; line 186 interpolates foundry.utils.escapeHTML(error.message) only.",
+        "rule": "unsafe-inner-html"
+      },
+      {
+        "path": "scripts/virtual-book.js",
+        "reason": "Audited 2026-11-16: line 365 assigns a static spinner icon element; localized text is appended via createTextNode, not innerHTML.",
+        "rule": "unsafe-inner-html"
+      }
+    ],
+    "forbidPrivateFoundryApis": true,
+    "forbidSourceMaps": true,
+    "requireLocaleParity": true,
+    "requireRepositoryUrls": true,
+    "requireVersionParity": true,
+    "requiredLocales": [
+      "de",
+      "en"
+    ]
+  }
+}
